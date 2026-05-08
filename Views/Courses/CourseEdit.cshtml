@@ -1,0 +1,233 @@
+﻿@model Models.Course
+
+@{
+    var allStudents = DAL.DB.Students.ToList();
+    var registeredIds = Model.Registrations.Select(r => r.StudentId).ToList();
+
+    var selectedStudents = allStudents.Where(s => registeredIds.Contains(s.Id)).ToList();
+    var availableStudents = allStudents.Where(s => !registeredIds.Contains(s.Id)).ToList();
+
+
+    var currentYear = Session["CurrentYear"] != null
+        ? Session["CurrentYear"].ToString()
+        : Models.NextSession.Year.ToString();
+
+    var currentSession = Session["CurrentSession"] != null
+        ? Session["CurrentSession"].ToString()
+        : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
+}
+
+<div style="width:100%; margin-top:10px; font-family:Arial;">
+
+    <details class="cohortBlock" open style="width:100%;">
+
+        <summary class="cohortHeader" style="width:calc(100% - 20px); margin:0 10px; box-sizing:border-box;">
+            @Model.Title
+        </summary>
+
+        <div style="padding:18px;">
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Code</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>Session @Model.Session</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Title</strong>
+            </div>
+
+        </div>
+
+    </details>
+
+    <details id="registrationsDetails">
+        <summary class="cohortHeader">
+            Inscriptions des étudiants – @Model.Code
+        </summary>
+
+        <div class="dualListContainer">
+
+            <select id="selectedStudents" multiple size="12" class="dualListBox">
+                @foreach (var s in selectedStudents)
+                {
+                    <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
+                }
+            </select>
+
+            <div class="dualListButtons">
+                <button type="button" id="btnAdd" class="iconButton arrowAdd" style="display:none; background-color:#007bff;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+
+                <button type="button" id="btnRemove" class="iconButton arrowRemove" style="display:none; background-color:#007bff;">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button type="button" id="btnCancel" class="iconButton" style="background-color: transparent !important; font-size:30px ; display: none; color: #007bff; ">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <select id="availableStudents" multiple size="12" class="dualListBox">
+                @foreach (var s in availableStudents)
+                {
+                    <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
+                }
+            </select>
+
+        </div>
+    </details>
+</div>
+
+@section Scripts{
+    <script>
+        const selected = document.getElementById("selectedStudents");
+        const available = document.getElementById("availableStudents");
+        const btnAdd = document.getElementById("btnAdd");
+        const btnRemove = document.getElementById("btnRemove");
+        const btnCancel = document.getElementById("btnCancel");
+
+        let activeList = null;
+
+        selected.addEventListener("click", () => setActive(selected));
+        available.addEventListener("click", () => setActive(available));
+
+        selected.addEventListener("change", updateCancelVisibility);
+        available.addEventListener("change", updateCancelVisibility);
+
+        function setActive(list) {
+            activeList = list;
+
+            btnAdd.style.display = list === available ? "inline-block" : "none";
+            btnRemove.style.display = list === selected ? "inline-block" : "none";
+
+            updateCancelVisibility();
+        }
+
+        function updateCancelVisibility() {
+            const hasSelection =
+                selected.selectedOptions.length > 0 ||
+                available.selectedOptions.length > 0;
+
+            btnCancel.style.display = hasSelection ? "inline-block" : "none";
+        }
+
+        btnAdd.onclick = () => moveSelected(available, selected);
+        btnRemove.onclick = () => moveSelected(selected, available);
+        btnCancel.onclick = () => location.reload();
+
+        function moveSelected(from, to) {
+            [...from.selectedOptions].forEach(opt => to.appendChild(opt));
+            updateCancelVisibility();
+        }
+
+    </script>
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .pageTitle a.cmdIcon,
+        .pageTitle a.cmdIcon:link,
+        .pageTitle a.cmdIcon:visited,
+        .pageTitle a.cmdIcon:hover,
+        .pageTitle a.cmdIcon:active {
+            color: #E8E8E8 !important;
+            text-decoration: none;
+        }
+
+            .pageTitle a.cmdIcon.active,
+            .pageTitle a.cmdIcon.active:link,
+            .pageTitle a.cmdIcon.active:visited,
+            .pageTitle a.cmdIcon.active:hover,
+            .pageTitle a.cmdIcon.active:active {
+                color: #000 !important;
+                font-weight: 700;
+            }
+
+        .dualListContainer {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-direction: row;
+            transition: all 0.3s ease;
+        }
+
+        .cohortBlock:not([open]) + #registrationsDetails .dualListContainer {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+            .cohortBlock:not([open]) + #registrationsDetails .dualListContainer select {
+                width: 100%;
+                margin-top: 10px;
+                border-radius: 5px;
+                padding-right: 15px;
+                padding-left: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+        .cohortBlock[open] + #registrationsDetails .dualListContainer select {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding-right: 15px;
+            padding-left: 15px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+
+
+        .cohortBlock:not([open]) + #registrationsDetails .arrowAdd i {
+            transform: rotate(90deg);
+        }
+
+        .cohortBlock:not([open]) + #registrationsDetails .arrowRemove i {
+            transform: rotate(90deg);
+        }
+
+        .cohortBlock:not([open]) + #registrationsDetails .dualListButtons {
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .dualListBox {
+            width: 260px;
+            height: 260px;
+        }
+
+        .dualListButtons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .iconButton {
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        summary {
+            cursor: pointer;
+            user-select: none;
+        }
+
+            summary * {
+                pointer-events: none;
+            }
+    </style>
+}

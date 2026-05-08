@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Models.Course>
+
+@{
+    var sessionsList = Model.Select(c => c.Session)
+                            .Distinct()
+                            .OrderBy(s => s)
+                            .ToList();
+
+    string search = ViewBag.Search as string ?? "";
+    bool hasSearch = !string.IsNullOrWhiteSpace(search);
+
+    bool first = true;
+}
+
+<div class="studentList">
+    @foreach (int session in sessionsList)
+    {
+        var courses = Model.Where(c => c.Session == session).ToList();
+
+        if (courses.Count > 0)
+        {
+            string open = first ? "open" : "";
+            first = false;
+
+            <details data-session="@session">
+                <summary>Session @session</summary>
+
+                <div class="cohortStudents">
+                    @foreach (var course in courses)
+                    {
+                        <div class="studentRow"
+                             onclick="window.location='@Url.Action("CourseDetails", "Courses", new { id = course.Id })'"
+                             style="cursor:pointer;">
+
+                            <span class="studentCode" style="color:blue">@course.Code</span>
+                            <span class="studentName">@course.Title</span>
+
+                        </div>
+                    }
+                </div>
+            </details>
+        }
+    }
+</div>
+
+<script>
+    $(document).on("toggle", "details[data-session]", function () {
+        setTimeout(() => {
+            let openSessions = [];
+            $("details[data-session]").each(function () {
+                if (this.open) {
+                    openSessions.push($(this).data("session"));
+                }
+            });
+            sessionStorage.setItem("openCourseDetails", JSON.stringify(openSessions));
+        }, 0);
+    });
+
+    $(document).on("click", "a[href*='ToggleSearch']", function () {
+        setTimeout(() => {
+            let openSessions = [];
+            $("details[data-session]").each(function () {
+                if (this.open) {
+                    openSessions.push($(this).data("session"));
+                }
+            });
+            sessionStorage.setItem("openCourseDetails", JSON.stringify(openSessions));
+        }, 0);
+    });
+</script>

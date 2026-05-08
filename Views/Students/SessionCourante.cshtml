@@ -1,0 +1,72 @@
+﻿@model Models.SessionCourante
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "sessionForm" }))
+{
+    <p style="color:dodgerblue;">Choisissez l'année et la session pour les prochaines allocations de cours :</p>
+    <div class="form-group mb-3">
+        <label>Année</label>
+        @Html.TextBoxFor(
+         m => m.Annee,
+         new
+         {
+             @class = "form-control roundedField",
+             type = "number",
+             max = DateTime.Now.Year
+         }
+     )
+
+    </div>
+
+    <div class="form-group mb-3">
+        <fieldset>
+            <legend>Session</legend>
+
+            <label class="sessionOption">
+                @Html.RadioButtonFor(m => m.Session, "Automne",
+                                             new { @class = "sessionRadio", id = "sessionAutomne" })
+                <span>Automne</span>
+            </label>
+
+            <label class="sessionOption">
+                @Html.RadioButtonFor(m => m.Session, "Hiver",
+                                             new { @class = "sessionRadio", id = "sessionHiver" })
+                <span>Hiver</span>
+            </label>
+        </fieldset>
+    </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .roundedField {
+            border-radius: 10px !important;
+            border: 1px solid lightgray !important;
+        }
+
+        .sessionBox {
+            border: 2px solid lightgray;
+            border-radius: 10px;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sessionOption {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: gray;
+            cursor: pointer;
+        }
+
+        .sessionRadio {
+            accent-color: mediumpurple;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+        }
+    </style>
+}

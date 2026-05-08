@@ -1,0 +1,14 @@
+[
+  {
+    "TeacherId": 1,
+    "CourseId": 1,
+    "Year": 2026,
+    "Id": 1
+  },
+  {
+    "TeacherId": 1,
+    "CourseId": 2,
+    "Year": 2026,
+    "Id": 2
+  }
+]

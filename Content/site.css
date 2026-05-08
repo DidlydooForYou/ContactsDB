@@ -1,0 +1,207 @@
+
+
+form {
+    max-width: 4in;
+    margin: auto;
+}
+
+    form label {
+        font-weight: bold;
+    }
+
+    form input {
+        margin-bottom: 8px;
+    }
+
+
+.detailsPanel dl {
+
+    margin: auto;
+
+    font-size: 1em;
+}
+
+.detailsPanel dt {
+    color: gray;
+}
+
+.detailsPanel dd {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+fieldset {
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    padding-top: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom:6px;
+}
+
+legend {
+    font-size: 1.0em;
+    font-weight: bold;
+    color: #777;
+    float: none;
+    width: inherit;
+    padding: 0 6px;
+    margin-left: 6px;
+    margin-bottom: -12px;
+    transform: translate(0,-1px);
+    text-align: left;
+}
+
+input, textarea {
+    margin: 0px !important;
+}
+
+label {
+    color: #777;
+}
+
+details {
+    @media (prefers-reduced-motion: no-preference) {
+        interpolate-size: allow-keywords;
+    }
+
+
+    &::details-content {
+        opacity: 0;
+        block-size: 0;
+        overflow-y: clip;
+        transition: content-visibility 1s allow-discrete, opacity 0.75s, block-size 0.75s;
+    }
+
+    &[open]::details-content {
+        opacity: 1;
+        block-size: auto;
+    }
+
+    & div {
+        margin-left: 6px;
+    }
+}
+summary {
+    background: lightgray;
+    height: 34px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    align-items: center;
+}
+
+    summary:hover {
+        background: #e0e0e0;
+    }
+
+    summary::marker {
+        font-size: 20px;
+        color: black;
+    }
+
+details[open] summary {
+    border: 2px solid black;
+}
+
+
+
+.cohortBlock {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.cohortHeader {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.studentRow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+    .studentRow:hover {
+        background-color: #f0f0f0;
+    }
+
+
+.studentCode {
+    min-width: 80px;
+}
+
+.studentName {
+    flex-grow: 0; 
+}
+
+.headerMenu {
+    display: grid;
+    grid-template-columns: 3em auto max-content;
+    align-items: center;
+}
+
+    .headerMenu a {
+        text-decoration: none;
+    }
+
+.inscriptionsTitle {
+    margin-top: 25px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.inscriptionYearHeader {
+    margin-top: 15px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.inscriptionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.inscriptionRow {
+    display: grid;
+    grid-template-columns: 50px 150px auto;
+    padding: 6px 4px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+    .inscriptionRow:hover {
+        background-color: #f5f5f5;
+    }
+
+.inscriptionSession {
+    font-weight: bold;
+    color: #444;
+}
+
+.inscriptionCode {
+    color: #0066cc;
+    font-weight: 600;
+}
+
+.inscriptionName {
+    color: #333;
+}
+
+.currentSessionBadge {
+    background: #eef6ff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #0056b3;
+    font-weight: 600;
+    margin-left: 20px;
+    display: inline-block;
+}
+
+    .currentSessionBadge:hover {
+        background: #d9ecff;
+    }

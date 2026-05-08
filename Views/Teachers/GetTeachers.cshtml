@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Models.Teacher>
+
+@{
+    string search = ViewBag.Search as string ?? "";
+    bool hasSearch = !string.IsNullOrWhiteSpace(search);
+}
+
+<div class="studentList">
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:8px 10px 25px 10px; min-height:280px;">
+
+        <div>
+            @foreach (var prof in Model.OrderBy(p => p.LastName))
+            {
+                <a href="/Teachers/TeachersDetails/@prof.Id"
+                   class="teacherRow"
+                   style="display:flex; align-items:center; gap:6px; text-decoration:none; margin-bottom:8px; color:black;">
+
+                    <img src="@prof.Avatar"
+                         style="width:38px; height:38px; border-radius:50%; object-fit:cover;" />
+
+                    <span class="teacherCode" style="color:blue; font-family:Consolas, monospace;">
+                        @prof.Code
+                    </span>
+
+                    <span class="teacherName" style="font-weight:bold; font-family:Georgia, serif; font-size:17px;">
+                        @prof.LastName @prof.FirstName
+                    </span>
+
+                </a>
+
+            }
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function teachersListPostRefresh() {
+
+        let search = $("#searchInput").val()?.trim().toLowerCase() || "";
+
+        $("#TeacherListPanel a").each(function () {
+
+            let name = $(this).find(".teacherName").text().trim().toLowerCase();
+            let code = $(this).find(".teacherCode").text().trim().toLowerCase();
+
+            let matches =
+                search.length === 0 ||
+                name.includes(search) ||
+                code.includes(search);
+
+            $(this).toggle(matches);
+        });
+
+        if (search.length > 0) {
+
+            $("#TeacherListPanel .teacherName, #TeacherListPanel .teacherCode").each(function () {
+
+                let original = $(this).text();
+                let lower = original.toLowerCase();
+                let index = lower.indexOf(search);
+
+                if (index === -1) return;
+
+                let before = original.substring(0, index);
+                let match = original.substring(index, index + search.length);
+                let after = original.substring(index + search.length);
+
+                $(this).html(
+                    before +
+                    "<span style='background:yellow;'>" +
+                    match +
+                    "</span>" +
+                    after
+                );
+            });
+        }
+    }
+
+</script>

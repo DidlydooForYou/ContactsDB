@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Models.Student>
+
+@{
+    var yearsList = (Session["StudentsYearsList"] as List<int>) ??
+                    Model.Select(s => s.Year).Distinct().OrderByDescending(y => y).ToList();
+
+    string search = ViewBag.Search as string ?? "";
+    bool hasSearch = !string.IsNullOrWhiteSpace(search);
+
+    bool first = true;
+}
+
+<div class="studentList">
+    @foreach (int year in yearsList)
+    {
+        var students = Model.Where(s => s.Year == year).ToList();
+
+        if (students.Count > 0)
+        {
+            string open = first ? "open" : "";
+            first = false;
+
+            <details data-year="@year">
+                <summary>Cohorte @year</summary>
+
+                <div class="cohortStudents">
+                    @foreach (var item in students)
+                    {
+                        <div class="studentRow"
+                             onclick="window.location='@Url.Action("GetStudentDetails", new { id = item.Id })'"
+                             style="cursor:pointer;">
+
+                            <span class="studentCode" style="color:blue">@item.Code</span>
+                            <span class="studentName">@item.LastName @item.FirstName</span>
+
+                        </div>
+                    }
+                </div>
+            </details>
+        }
+    }
+</div>
+
+<script>
+    $(document).on("click", "a[href*='ToggleSearch']", function () {
+
+        let openYears = [];
+
+        $("details[data-year][open]").each(function () {
+            openYears.push($(this).data("year").toString());
+        });
+
+        sessionStorage.setItem("openDetails", JSON.stringify(openYears));
+    });
+    $(document).on("change", "#yearSelect", function () {
+
+        let selected = $(this).val();
+
+        sessionStorage.setItem("selectedYear", selected);
+
+        studentsListPostRefresh();
+    });
+</script>

@@ -1,0 +1,32 @@
+[
+  {
+    "Email": "Luc.Ledoux@yopmail.com",
+    "VerificationCode": "81d5a2ac-fe43-4047-bbe8-e61ab34b28c3",
+    "UserId": 5,
+    "Id": 2
+  },
+  {
+    "Email": "Francois.Simard@yopmail.com",
+    "VerificationCode": "bff15efa-3545-4c6b-8576-a34fee340993",
+    "UserId": 6,
+    "Id": 3
+  },
+  {
+    "Email": "Patrice.Roy@yopmail.com",
+    "VerificationCode": "65abe45c-ec9b-4c42-a8ee-1fa3876b8315",
+    "UserId": 7,
+    "Id": 4
+  },
+  {
+    "Email": "Etienne.Forest@yopmail.com",
+    "VerificationCode": "2f3b0705-0ac7-4aaa-bf69-ceccf6ce36e8",
+    "UserId": 8,
+    "Id": 5
+  },
+  {
+    "Email": "Liba.Jabour@yopmail.com",
+    "VerificationCode": "5ddf8ad5-8799-4f1a-9f9b-ca96455325a1",
+    "UserId": 9,
+    "Id": 6
+  }
+]

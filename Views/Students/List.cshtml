@@ -1,0 +1,107 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.PageTitle = "Student list";
+    bool showSearch = Session["ShowSearch"] != null && (bool)Session["ShowSearch"];
+}
+
+<div id="StudentListPanel" class="studentListLayout"></div>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .pageTitle a.cmdIcon,
+        .pageTitle a.cmdIcon:link,
+        .pageTitle a.cmdIcon:visited,
+        .pageTitle a.cmdIcon:hover,
+        .pageTitle a.cmdIcon:active {
+            color: #E8E8E8 !important;
+            text-decoration: none;
+        }
+
+            .pageTitle a.cmdIcon.active,
+            .pageTitle a.cmdIcon.active:link,
+            .pageTitle a.cmdIcon.active:visited,
+            .pageTitle a.cmdIcon.active:hover,
+            .pageTitle a.cmdIcon.active:active {
+                color: #000 !important;
+                font-weight: 700;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function studentsListPostRefresh() {
+
+            let selectedYear = sessionStorage.getItem("selectedYear") || $("#yearSelect").val() || "";
+
+            $("details[data-year]").each(function () {
+                let year = $(this).data("year").toString();
+
+                if (selectedYear === "" || year === selectedYear) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            let search = $("#searchInput").val().trim().toLowerCase();
+
+            $(".studentRow").each(function () {
+
+                let fullName = $(this).find(".studentName").text().trim().toLowerCase();
+                let lastName = fullName.split(" ")[0] || "";
+
+                let matches =
+                    search.length === 0 ||
+                    lastName.startsWith(search);
+
+                $(this).toggle(matches);
+            });
+
+            $("details[data-year]").each(function () {
+                let visible = $(this).find(".studentRow:visible").length;
+                $(this).toggle(visible > 0);
+            });
+
+            if (search.length > 0) {
+                $(".studentName").each(function () {
+                    let original = $(this).text();
+                    let lower = original.toLowerCase();
+                    let index = lower.indexOf(search);
+                    if (index === -1) return;
+
+                    $(this).html(
+                        original.substring(0, index) +
+                        "<span style='background:yellow;'>" +
+                        original.substring(index, index + search.length) +
+                        "</span>" +
+                        original.substring(index + search.length)
+                    );
+                });
+            }
+
+            let openYears = JSON.parse(sessionStorage.getItem("openDetails") || "[]");
+            $("details[data-year]").prop("open", false);
+            openYears.forEach(y => {
+                $(`details[data-year="${y}"]`).prop("open", true);
+            });
+        }
+
+
+        let studentsListAutoRefreshPanel = null;
+
+        $(() => {
+
+            studentsListAutoRefreshPanel =
+                new AutoRefreshedPanel(
+                    "StudentListPanel",
+                    "/Students/GetStudent",
+                    5,
+                    studentsListPostRefresh
+                );
+        });
+
+    </script>
+}

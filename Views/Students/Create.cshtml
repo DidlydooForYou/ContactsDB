@@ -1,0 +1,127 @@
+﻿@model Models.Student
+
+@{
+    ViewBag.Title = "Élève - Ajout";
+}
+
+<div style="width:380px; margin:0 auto; font-family:Arial;">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+
+        <div style="border:1px solid #dcdcdc; border-radius:6px; padding:5px;">
+
+            <div onclick="toggleStudentDetails()"
+                 style="background:#d0d0d0; padding:8px; font-weight:bold; cursor:pointer; border-radius:4px;">
+
+                <span id="arrowEdit">▼</span>
+                <span>Informations - [@Model.Code]</span>
+
+            </div>
+
+            <div id="editStudentDetails">
+
+                <div style="padding:15px;">
+
+                    <div style="margin-bottom:15px;">
+                        <label style="font-weight:bold; color:#666;">
+                            Prénom
+                        </label>
+
+                        @Html.TextBoxFor(model => model.FirstName,
+                                                 new
+                                                 {
+                                                     @class = "form-control",
+                                                     required = "required"
+                                                 })
+                    </div>
+
+                    <div style="margin-bottom:15px;">
+                        <label style="font-weight:bold; color:#666;">
+                            Nom
+                        </label>
+
+                        @Html.TextBoxFor(model => model.LastName,
+                                                 new
+                                                 {
+                                                     @class = "form-control",
+                                                     required = "required"
+                                                 })
+                    </div>
+
+                    <div style="margin-bottom:15px;">
+                        <label style="font-weight:bold; color:#666;">
+                            Date de naissance
+                        </label>
+
+                        @Html.TextBoxFor(model => model.BirthDate,
+                                                "{0:yyyy-MM-dd}",
+                                                new
+                                                {
+                                                    @class = "form-control",
+                                                    type = "date",
+                                                    required = "required"
+                                                })
+                    </div>
+
+                    <div style="margin-bottom:15px;">
+                        <label style="font-weight:bold; color:#666;">
+                            Courriel
+                        </label>
+
+                        @Html.TextBoxFor(model => model.Email,
+                                     new
+                                     {
+                                         @class = "form-control",
+                                         type = "email",
+                                         required = "required",
+                                         pattern = @"^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                                     })
+                    </div>
+
+
+                    <div style="margin-bottom:15px;">
+                        <label style="font-weight:bold; color:#666;">
+                            Téléphone
+                        </label>
+
+                        @Html.TextBoxFor(model => model.Phone,
+                            new
+                            {
+                                @class = "form-control",
+                                pattern = @"^\(\d{3}\)\s\d{3}\s\d{4}$",
+                                required = "required"
+                            })
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    }
+</div>
+
+<script>
+    function toggleStudentDetails() {
+
+        let details = document.getElementById("editStudentDetails");
+        let arrow = document.getElementById("arrowEdit");
+
+        if (details.style.display === "none") {
+
+            details.style.display = "block";
+            arrow.innerHTML = "▼";
+
+        }
+        else {
+
+            details.style.display = "none";
+            arrow.innerHTML = "►";
+        }
+    }
+</script>

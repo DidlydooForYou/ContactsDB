@@ -1,0 +1,58 @@
+.cmdIcon {
+    font-size: 1.5rem;
+    margin-right: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    .cmdIcon:hover {
+        color: rgb(103, 165, 247);
+    }
+.cmdIconSmall {
+    font-size:1.2rem;
+}
+.menuIcon {
+    font-size: 1.2rem;
+    text-align: center;
+    color: darkgray;
+}
+
+.pageTitle {
+    font-size: 1.5em;
+    text-align: left;
+}
+
+.menu {
+    display: flex;
+   
+    gap: 4px;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+.siteIcon {
+    width: 2.5em;
+    height: 2.5em;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.item-layout {
+    display: grid !important;
+    grid-template-columns: 40px auto !important;
+    align-items: center;
+    cursor: pointer;
+}
+
+.searchBar {
+    display: flex;
+    gap: 6px;
+}
+
+.searchBarItem {
+    width:33%;
+}

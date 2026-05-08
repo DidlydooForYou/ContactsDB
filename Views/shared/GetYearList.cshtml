@@ -1,0 +1,47 @@
+﻿@{
+    List<int> years = DAL.DB.Students.ToList()
+        .Select(s => s.Year)
+        .Distinct()
+        .OrderByDescending(y => y)
+        .ToList();
+
+    if (years.Count == 0)
+    {
+        years.Add(Models.NextSession.Year);
+    }
+
+    int? selectedYear = Session["SelectedYear"] as int?;
+}
+
+<select id="yearSelect" class="form-control ellipsis">
+    <option value="">Toutes les années</option>
+
+    @foreach (var year in years)
+    {
+        string selected = (selectedYear == year) ? "selected" : "";
+        <option value="@year" @selected>@year</option>
+    }
+</select>
+
+@section Scripts {
+    <script>$(function () {
+
+    console.log("Binding yearSelect change handler");
+
+    $(document).on("change", "#yearSelect", function () {
+        let year = $(this).val();
+
+        console.log("Dropdown changed, year =", year);
+
+        sessionStorage.setItem("selectedYear", year);
+
+        console.log("sessionStorage now =", sessionStorage.getItem("selectedYear"));
+
+        studentsListAutoRefreshPanel.refresh();
+    });
+
+});</script>
+}
+
+
+

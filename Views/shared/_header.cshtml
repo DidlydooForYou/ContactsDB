@@ -1,0 +1,307 @@
+﻿@{
+    string controller = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+    string action = HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString();
+
+    bool userConnected = Models.User.ConnectedUser != null;
+    bool userCanWrite = userConnected ? Models.User.ConnectedUser.CanWrite : false;
+    bool userIsAdmin = userConnected ? Models.User.ConnectedUser.IsAdmin : false;
+
+    bool showSearch = Session["ShowSearch"] != null && (bool)Session["ShowSearch"];
+
+    var id = HttpContext.Current.Request.RequestContext.RouteData.Values["id"];
+}
+
+<!-- HEADER -->
+<div class="section roundedBorder">
+    <div class="headerMenu">
+
+        <img src="/LionelGroulx.png" class="siteIcon" alt="Logo" />
+
+        <div class="pageTitle">
+
+            @if (action.ToLower() == "list" ||
+                 action.ToLower() == "getteachers" ||
+                 action.ToLower() == "getcourses")
+            {
+                <a href="/Students/List"
+                   class="cmdIcon @(controller.Equals("Students", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                    Étudiants
+                </a>
+
+                <a href="/Courses/List"
+                   class="cmdIcon @(controller.Equals("Courses", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                    Cours
+                </a>
+
+                <a href="/Teachers/List"
+                   class="cmdIcon @(controller.Equals("Teachers", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                    Profs
+                </a>
+            }
+            else
+            {
+                string title = "Étudiant";
+
+                if (action.ToLower() == "getstudentdetails")
+                {
+                    title += " - Détails";
+                }
+                else if (action.ToLower() == "studentedit")
+                {
+                    title += " - Modification";
+                }
+                else if (action.ToLower() == "sessioncourante")
+                {
+                    title = "Session courante";
+                }
+                else if (action.ToLower() == "teachersdetails")
+                {
+                    title = "Prof - Détails";
+                }
+                else if (action.ToLower() == "teachersedit")
+                {
+                    title = "Prof - Modification";
+                }
+                else if (action.ToLower() == "coursedetails")
+                {
+                    title = "Cours - Détails";
+                }
+                else if (action.ToLower() == "courseedit")
+                {
+                    title = "Cours - Modification";
+                }
+                else if (action.ToLower() == "manageusers")
+                {
+                    title = "Gestion des usagers";
+                }
+                else if (action.ToLower() == "loginsjournal")
+                {
+                    title = "Historique de connexions";
+                }
+                else if (action.ToLower() == "eventsjournal")
+                {
+                    title = "Journal d'activités";
+                }
+
+                <span class="title-text" style="font-weight:bold;">@title</span>
+            }
+
+        </div>
+
+        <div id="mainMenuPanel" class="menu ms-auto">
+
+            @if (action.ToLower() == "list" ||
+                 action.ToLower() == "getteachers" ||
+                 action.ToLower() == "getcourses")
+            {
+
+                if (userCanWrite)
+                {
+                    <a href="/@controller/Create"
+                       class="cmdIcon fa fa-circle-plus"
+                       title="Ajouter..."></a>
+                }
+
+                <a href="/@controller/ToggleSearch"
+                   class="cmdIcon fa fa-search"
+                   title="Recherche..."></a>
+
+                <div class="dropdown" style="color:dodgerblue;">
+                    <div data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="cmdIcon fa fa-bars" title="Menu"></i>
+                    </div>
+
+                    <div class="dropdown-menu noselect" style="width:300px !important">
+
+                        <div class="dropdown-item item-layout">
+                            <i class="menuIcon fa fa-address-card"></i>
+                            <a href="/Accounts/EditProfil">Profil...</a>
+                        </div>
+
+                        <div class="dropdown-item item-layout">
+                            <i class="menuIcon fa fa-sign-out"></i>
+                            <a href="/Accounts/Logout">Déconnexion...</a>
+                        </div>
+
+                        @if (userIsAdmin)
+                        {
+                            <div class="dropdown-divider"></div>
+
+                            <div class="dropdown-item item-layout">
+                                <i class="menuIcon fa fa-users"></i>
+                                <a href="/Accounts/ManageUsers">
+                                    Gestion des usagers...
+                                </a>
+                            </div>
+
+                            <div class="dropdown-item item-layout">
+                                <i class="menuIcon fa fa-calendar-days"></i>
+                                <a href="/Accounts/LoginsJournal">
+                                    Historique de connexions...
+                                </a>
+                            </div>
+
+                            <div class="dropdown-item item-layout">
+                                <i class="menuIcon fa fa-gear"></i>
+                                <a href="/Accounts/EventsJournal">
+                                    Journal d'activités...
+                                </a>
+                            </div>
+                        }
+
+                        <div class="dropdown-divider"></div>
+
+                        <div class="dropdown-item item-layout">
+                            <i class="menuIcon fa fa-info-circle"></i>
+                            <a href="/@controller/About">À propos...</a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+            @if (action.ToLower() == "getstudentdetails" ||
+                 action.ToLower() == "teachersdetails" ||
+                 action.ToLower() == "coursedetails")
+            {
+
+                if (userCanWrite)
+                {
+                    <a href="/@controller/Create"
+                       class="cmdIcon fa fa-circle-plus"
+                       title="Ajouter..."></a>
+                }
+
+                if (action.ToLower() == "getstudentdetails")
+                {
+                    <a href="@Url.Action("StudentEdit", "Students", new { id = Model.Id })"
+                       class="cmdIcon fa fa-pen-to-square"
+                       title="Modifier..."></a>
+
+                    <i class="cmdIcon fa fa-trash-can"
+                       title="Effacer"
+                       style="color:dodgerblue;"
+                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Students/Delete/@id'; })">
+                    </i>
+
+                    <a href="@Url.Action("List", "Students")"
+                       class="cmdIcon fa fa-square-xmark"
+                       title="Annuler"></a>
+                }
+
+                if (action.ToLower() == "teachersdetails")
+                {
+                    <a href="@Url.Action("TeachersEdit", "Teachers", new { id = Model.Id })"
+                       class="cmdIcon fa fa-pen-to-square"
+                       title="Modifier..."></a>
+
+                    <i class="cmdIcon fa fa-trash-can"
+                       title="Effacer"
+                       style="color:dodgerblue;"
+                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Teachers/Delete/@id'; })">
+                    </i>
+
+                    <a href="@Url.Action("List", "Teachers")"
+                       class="cmdIcon fa fa-square-xmark"
+                       title="Annuler"></a>
+                }
+
+                if (action.ToLower() == "coursedetails")
+                {
+                    <a href="@Url.Action("CourseEdit", "Courses", new { id = Model.Id })"
+                       class="cmdIcon fa fa-pen-to-square"
+                       title="Modifier..."></a>
+
+                    <i class="cmdIcon fa fa-trash-can"
+                       title="Effacer"
+                       style="color:dodgerblue;"
+                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Courses/Delete/@id'; })">
+                    </i>
+
+                    <a href="@Url.Action("List", "Courses")"
+                       class="cmdIcon fa fa-square-xmark"
+                       title="Annuler"></a>
+                }
+            }
+
+            @if (action.ToLower() == "studentedit")
+            {
+                <button type="submit"
+                        form="form0"
+                        class="cmdIcon fa fa-check-circle"
+                        style="color:dodgerblue; font-size:20px;"
+                        title="Enregistrer"></button>
+
+                <a href="@Url.Action("GetStudentDetails", "Students", new { id = Model.Id })"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Annuler"></a>
+            }
+
+            @if (action.ToLower() == "teachersedit")
+            {
+                <button type="submit"
+                        form="form0"
+                        class="cmdIcon fa fa-check-circle"
+                        style="color:dodgerblue; font-size:20px;"
+                        title="Enregistrer"></button>
+
+                <a href="@Url.Action("TeachersDetails", "Teachers", new { id = Model.Id })"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Annuler"></a>
+            }
+
+            @if (action.ToLower() == "courseedit")
+            {
+                <button type="submit"
+                        form="form0"
+                        class="cmdIcon fa fa-check-circle"
+                        style="color:dodgerblue; font-size:20px;"
+                        title="Enregistrer"></button>
+
+                <a href="@Url.Action("CourseDetails", "Courses", new { id = Model.Id })"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Annuler"></a>
+            }
+
+            @if (action.ToLower() == "sessioncourante")
+            {
+                <button type="button"
+                        onclick="document.getElementById('sessionForm').submit()"
+                        class="cmdIcon fa fa-check-circle"
+                        style="color:dodgerblue; font-size:20px;"
+                        title="Enregistrer"></button>
+
+                <a href="@Url.Action("List", "Students")"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Annuler"></a>
+            }
+
+            @if (action.ToLower() == "manageusers" ||
+                 action.ToLower() == "loginsjournal" ||
+                 action.ToLower() == "eventsjournal")
+            {
+                <a href="/Students/List"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Retour"></a>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+@if (showSearch)
+{
+    <div class="searchAndYear" style="display:flex; gap:10px; align-items:center;">
+
+        <input type="text" id="searchInput" class="form-control"
+               placeholder="Rechercher..." style="max-width:250px;" />
+
+        @if (action.ToLower() == "list" && controller.ToLower() == "students")
+        {
+            Html.RenderPartial("GetYearList");
+        }
+
+    </div>
+}
+

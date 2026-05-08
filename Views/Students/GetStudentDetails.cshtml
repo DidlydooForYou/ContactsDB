@@ -1,0 +1,71 @@
+﻿@model Models.Student
+
+<div class="studentDetailsList">
+
+    <details open>
+        <summary>
+            <i class="fa-solid fa-graduation-cap detailIcon"></i>
+            @Model.FirstName @Model.LastName
+        </summary>
+
+        <div class="cohortStudents">
+
+            <div class="detailRow">
+                <i class="fa-solid fa-barcode detailIcon"></i>
+                <span class="detailText" style="font-weight:bold;">@Model.Code</span>
+            </div>
+
+            <div class="detailRow">
+                <i class="fa-solid fa-phone detailIcon"></i>
+                <span class="detailText" style="font-weight:bold;">@Model.Phone</span>
+            </div>
+
+            <div class="detailRow">
+                <i class="fa-solid fa-envelope detailIcon"></i>
+                <span class="detailText" style="font-weight:bold;">@Model.Email</span>
+            </div>
+
+            <div class="detailRow">
+                <i class="fa-solid fa-birthday-cake detailIcon"></i>
+                <span class="detailText" style="font-weight:bold;">@Model.BirthDate.ToString("dd MMMM yyyy")</span>
+            </div>
+
+        </div>
+    </details>
+
+</div>
+
+<div class="dropdown-divider"></div>
+
+<h2 class="inscriptionsTitle">Inscriptions</h2>
+
+@foreach (var year in Model.Registrations
+                         .Select(r => r.Year)
+                         .Distinct()
+                         .OrderByDescending(y => y))
+{
+    <details open>
+        <summary>@year</summary>
+
+        <div class="inscriptionsList">
+            @foreach (var reg in Model.Registrations.Where(r => r.Year == year)
+                                                    .OrderBy(r => r.Course.Session))
+            {
+                var course = reg.Course;
+
+                <div class="inscriptionRow"
+                     onclick="window.location='@Url.Action("CourseDetails", "Courses", new { id = course.Id })'">
+
+                    <span class="inscriptionSession">[@course.Session]</span>
+                    <span class="inscriptionCode">@course.Code</span>
+                    <span class="inscriptionName">@course.Title</span>
+
+                </div>
+            }
+        </div>
+    </details>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+}

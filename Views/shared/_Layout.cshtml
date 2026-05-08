@@ -1,0 +1,60 @@
+﻿@{
+    var currentYear = Session["CurrentYear"] != null
+        ? Session["CurrentYear"].ToString()
+        : Models.NextSession.Year.ToString();
+
+    var currentSession = Session["CurrentSession"] != null
+        ? Session["CurrentSession"].ToString()
+        : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    @Styles.Render("~/Content/css")
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+
+    <div class="page">
+        @Html.Partial("_Header")
+
+        <div id="contentPanel" class="content">
+            <div id="mainContentPanel" class="main roundedBorder scrollable">
+                @RenderBody()
+            </div>
+        </div>
+
+        <div id="footerPanel" class="section roundedBorder" style="font-weight:bold;">
+            <a href="@Url.Action("SessionCourante", "Students")"
+               style="text-decoration:none; cursor:pointer; color:black;">
+                Session courante : <b>@currentSession @currentYear</b>
+            </a>
+        </div>
+
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <!-- Insertion des regroupements de scripts -->
+    @Scripts.Render("~/bundles/clientViewScript")
+
+    <!-- Insertion de script local aux vues -->
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

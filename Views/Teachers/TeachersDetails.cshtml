@@ -1,0 +1,114 @@
+﻿@model Models.Teacher
+
+@{
+    List<Models.Allocation> allocations = ViewBag.Allocations as List<Models.Allocation>
+                                         ?? new List<Models.Allocation>();
+
+    List<Models.Course> courses = ViewBag.Courses as List<Models.Course>
+                                ?? new List<Models.Course>();
+
+    var yearsList = allocations
+                    .Select(a => a.Year)
+                    .Distinct()
+                    .OrderByDescending(y => y)
+                    .ToList();
+
+    bool first = true;
+}
+
+<div style="width:100%; margin-top:10px; font-family:Arial;">
+
+    <details class="cohortBlock" open style="width:100%;">
+
+        <summary class="cohortHeader" style="width:100%; box-sizing:border-box;">
+            @Model.FullName
+        </summary>
+
+        <div style="max-width:500px; margin:0 auto; padding:18px;">
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.FirstName @Model.LastName</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Code</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Phone</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Email</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>Embauché le @Model.StartDate.ToString("yyyy-MM-dd")</strong>
+            </div>
+
+            <div style="text-align:center;">
+                <img src="@Model.Avatar"
+                     style="max-width:250px;" />
+            </div>
+
+        </div>
+
+    </details>
+
+    <div style="background:#e5e5e5; padding:8px; font-weight:bold; margin-top:10px;">
+        <div style="padding-left:10px;">
+            Allocations
+        </div>
+    </div>
+
+    <div class="studentList">
+
+        @foreach (int year in yearsList)
+        {
+            var yearAllocations = allocations.Where(a => a.Year == year).ToList();
+
+            if (yearAllocations.Count > 0)
+            {
+                string open = first ? "open" : "";
+                first = false;
+
+                <details @open>
+                    <summary>@year</summary>
+
+                    <div class="cohortStudents">
+
+                        @foreach (var allocation in yearAllocations)
+                        {
+                            var course = courses.FirstOrDefault(c => c.Id == allocation.CourseId);
+
+                            if (course != null)
+                            {
+                                <div class="studentRow"
+                                     onclick="window.location='@Url.Action("CourseDetails", "Courses", new { id = course.Id })'"
+                                     style="cursor:pointer;">
+
+                                    <span style="color:gray;">
+                                        [@course.Session]
+                                    </span>
+
+                                    <span class="studentCode" style="color:blue;">
+                                        @course.Code
+                                    </span>
+
+                                    <span class="studentName">
+                                        @course.Title
+                                    </span>
+
+                                </div>
+                            }
+                        }
+
+                    </div>
+
+                </details>
+            }
+        }
+
+    </div>
+
+</div>

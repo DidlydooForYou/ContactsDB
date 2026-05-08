@@ -1,0 +1,96 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.PageTitle = "Course list";
+    bool showSearch = Session["ShowSearch"] != null && (bool)Session["ShowSearch"];
+}
+
+<div id="CourseListPanel" class="studentListLayout" data-showsearch="@showSearch"></div>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .pageTitle a.cmdIcon,
+        .pageTitle a.cmdIcon:link,
+        .pageTitle a.cmdIcon:visited,
+        .pageTitle a.cmdIcon:hover,
+        .pageTitle a.cmdIcon:active {
+            color: #E8E8E8 !important;
+            text-decoration: none;
+        }
+
+            .pageTitle a.cmdIcon.active,
+            .pageTitle a.cmdIcon.active:link,
+            .pageTitle a.cmdIcon.active:visited,
+            .pageTitle a.cmdIcon.active:hover,
+            .pageTitle a.cmdIcon.active:active {
+                color: #000 !important;
+                font-weight: 700;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+
+        function coursesListPostRefresh() {
+
+            let search = $("#searchInput").val().trim().toLowerCase();
+
+            $(".studentRow").each(function () {
+
+                let title = $(this).find(".studentName").text().trim().toLowerCase();
+
+                let matches =
+                    search.length === 0 ||
+                    title.includes(search) 
+
+                $(this).toggle(matches);
+            });
+
+            $("details").each(function () {
+                let visible = $(this).find(".studentRow:visible").length;
+                $(this).toggle(visible > 0);
+            });
+
+            if (search.length > 0) {
+                $(".studentName, .studentCode").each(function () {
+                    let original = $(this).text();
+                    let lower = original.toLowerCase();
+                    let index = lower.indexOf(search);
+
+                    if (index === -1) return;
+
+                    let before = original.substring(0, index);
+                    let match = original.substring(index, index + search.length);
+                    let after = original.substring(index + search.length);
+
+                    $(this).html(before + "<span style='background:yellow;'>" + match + "</span>" + after);
+                });
+            }
+
+            let openSessions = JSON.parse(sessionStorage.getItem("openCourseDetails") || "[]");
+
+            $("details[data-session]").prop("open", false);
+
+            openSessions.forEach(s => {
+                $(`details[data-session="${s}"]`).prop("open", true);
+            });
+        }
+
+
+        let coursesListAutoRefreshPanel = null;
+
+        $(() => {
+
+            coursesListAutoRefreshPanel =
+                new AutoRefreshedPanel(
+                    "CourseListPanel",
+                    "/Courses/GetCourses",
+                    5,
+                    coursesListPostRefresh
+                );
+        });
+
+    </script>
+}

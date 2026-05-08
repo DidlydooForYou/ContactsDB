@@ -1,0 +1,242 @@
+﻿@model Models.Teacher
+
+@using DAL;
+
+@{
+    var allCourses = DB.Courses.ToList();
+    var allocatedIds = Model.Allocations.Select(a => a.CourseId).ToList();
+
+    var selectedCourses = allCourses.Where(c => allocatedIds.Contains(c.Id)).ToList();
+    var availableCourses = allCourses.Where(c => !allocatedIds.Contains(c.Id)).ToList();
+
+    var currentYear = Session["CurrentYear"] != null
+        ? Session["CurrentYear"].ToString()
+        : Models.NextSession.Year.ToString();
+
+    var currentSession = Session["CurrentSession"] != null
+        ? Session["CurrentSession"].ToString()
+        : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
+}
+
+@using (Html.BeginForm())
+{
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="Code" value="@Model.Code" />
+    <input type="hidden" name="Avatar" value="@Model.Avatar" />
+    <input type="hidden" id="SelectedCourseIds" name="SelectedCourseIds" />
+
+    <details class="cohortBlock" open>
+        <summary class="cohortHeader">Informations – [@Model.Code]</summary>
+
+        <div style="max-width:500px; margin:0 auto; padding:18px;">
+
+            <label>Prénom</label>
+            <input type="text" name="FirstName" value="@Model.FirstName" class="form-control" />
+
+            <label>Nom</label>
+            <input type="text" name="LastName" value="@Model.LastName" class="form-control" />
+
+            <label>Date d'embauche</label>
+            <input type="date" name="StartDate"
+                   value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                   class="form-control" />
+
+            <label>Téléphone</label>
+            <input type="text" name="Phone" value="@Model.Phone" class="form-control" />
+
+            <label>Avatar</label>
+            <img src="@Model.Avatar"
+                 style="width:100%; max-height:360px; object-fit:cover; border-radius:8px;" />
+
+        </div>
+    </details>
+
+    <details id="allocationsDetails">
+        <summary class="cohortHeader">
+            Allocations : Session @currentSession @currentYear
+        </summary>
+
+        <div class="dualListContainer">
+
+            <select id="selectedCourses" multiple size="12" class="dualListBox">
+                @foreach (var c in selectedCourses)
+                {
+                    <option value="@c.Id">[@c.Session] @c.Code - @c.Title</option>
+                }
+            </select>
+
+            <div class="dualListButtons">
+                <button type="button" id="btnAdd" class="iconButton arrowAdd" style="display:none; background-color:#007bff;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+
+                <button type="button" id="btnRemove" class="iconButton arrowRemove" style="display:none; background-color:#007bff;">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button type="button" id="btnCancel" class="iconButton" style="background-color: transparent !important; font-size:30px ; display: none; color: #007bff; ">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <select id="availableCourses" multiple size="12" class="dualListBox">
+                @foreach (var c in availableCourses)
+                {
+                    <option value="@c.Id">[@c.Session] @c.Code - @c.Title</option>
+                }
+            </select>
+
+        </div>
+    </details>
+}
+
+
+@section Scripts{
+    <script>
+        const selected = document.getElementById("selectedCourses");
+        const available = document.getElementById("availableCourses");
+        const btnAdd = document.getElementById("btnAdd");
+        const btnRemove = document.getElementById("btnRemove");
+        const btnCancel = document.getElementById("btnCancel");
+
+        let activeList = null;
+
+        selected.addEventListener("click", () => setActive(selected));
+        available.addEventListener("click", () => setActive(available));
+
+        selected.addEventListener("change", updateCancelVisibility);
+        available.addEventListener("change", updateCancelVisibility);
+
+        function setActive(list) {
+            activeList = list;
+
+            btnAdd.style.display = list === available ? "inline-block" : "none";
+            btnRemove.style.display = list === selected ? "inline-block" : "none";
+
+            updateCancelVisibility();
+        }
+
+        function updateCancelVisibility() {
+            const hasSelection =
+                selected.selectedOptions.length > 0 ||
+                available.selectedOptions.length > 0;
+
+            btnCancel.style.display = hasSelection ? "inline-block" : "none";
+        }
+
+        btnAdd.onclick = () => moveSelected(available, selected);
+        btnRemove.onclick = () => moveSelected(selected, available);
+        btnCancel.onclick = () => location.reload();
+
+        function moveSelected(from, to) {
+            [...from.selectedOptions].forEach(opt => to.appendChild(opt));
+            updateCancelVisibility();
+        }
+
+    </script>
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .pageTitle a.cmdIcon,
+        .pageTitle a.cmdIcon:link,
+        .pageTitle a.cmdIcon:visited,
+        .pageTitle a.cmdIcon:hover,
+        .pageTitle a.cmdIcon:active {
+            color: #E8E8E8 !important;
+            text-decoration: none;
+        }
+
+            .pageTitle a.cmdIcon.active,
+            .pageTitle a.cmdIcon.active:link,
+            .pageTitle a.cmdIcon.active:visited,
+            .pageTitle a.cmdIcon.active:hover,
+            .pageTitle a.cmdIcon.active:active {
+                color: #000 !important;
+                font-weight: 700;
+            }
+
+        .dualListContainer {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-direction: row;
+            transition: all 0.3s ease;
+        }
+
+        .cohortBlock:not([open]) + #allocationsDetails .dualListContainer {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+            .cohortBlock:not([open]) + #allocationsDetails .dualListContainer select {
+                width: 100%;
+                margin-top: 10px;
+                border-radius: 5px;
+                padding-right: 15px;
+                padding-left: 15px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+        .cohortBlock[open] + #allocationsDetails .dualListContainer select {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding-right: 15px;
+            padding-left: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .cohortBlock:not([open]) + #allocationsDetails .arrowAdd i {
+            transform: rotate(90deg);
+        }
+
+        .cohortBlock:not([open]) + #allocationsDetails .arrowRemove i {
+            transform: rotate(90deg);
+        }
+
+        .cohortBlock:not([open]) + #allocationsDetails .dualListButtons {
+            flex-direction: row;
+            justify-content: center;
+        }
+
+
+        .dualListBox {
+            width: 260px;
+            height: 260px;
+        }
+
+        .dualListButtons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .iconButton {
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        summary {
+            cursor: pointer;
+            user-select: none;
+        }
+
+            summary * {
+                pointer-events: none;
+            }
+    </style>
+}

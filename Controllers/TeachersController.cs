@@ -1,0 +1,102 @@
+﻿using DAL;
+using Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+
+namespace ContactsDB.Controllers
+{
+    public class TeachersController : Controller
+    {
+        public ActionResult ToggleSearch()
+        {
+            if (Session["ShowSearch"] == null) Session["ShowSearch"] = false;
+            Session["ShowSearch"] = !(bool)Session["ShowSearch"];
+            return RedirectToAction("List", new { fromToggle = true });
+        }
+        public ActionResult List(bool fromToggle = false)
+        {
+            if (!fromToggle)
+            {
+                Session["ShowSearch"] = false;
+            }
+            ViewBag.ShowSearch = Session["ShowSearch"] as bool? ?? false;
+            return View();
+        }
+
+        public ActionResult GetTeachers()
+        {
+            ViewBag.ShowSearch = Session["ShowSearch"] as bool? ?? false;
+            var profs = DB.Teachers.ToList();
+            return PartialView(profs);
+        }
+
+        public ActionResult TeachersDetails(int id)
+        {
+            Teacher teacher = DB.Teachers.Get(id);
+
+            List<Allocation> allocations = DB.Allocations.ToList()
+                .Where(a => a.TeacherId == teacher.Id)
+                .ToList();
+
+            ViewBag.Allocations = allocations;
+            ViewBag.Courses = DB.Courses.ToList();
+
+            return View(teacher);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            DB.Teachers.Delete(id);
+            return RedirectToAction("List");
+        }
+
+        public ActionResult TeachersEdit(int id)
+        {
+            var prof = DB.Teachers.Get(id);
+            return View(prof);
+        }
+
+        [HttpPost]
+        public ActionResult TeachersEdit(Teacher prof)
+        {
+            DB.Teachers.Update(prof);
+            return RedirectToAction("TeachersDetails", new { id = prof.Id });
+        }
+
+
+
+        public ActionResult Create()
+        {
+            Teacher teacher = new Teacher();
+
+            teacher.StartDate = DateTime.Now;
+            teacher.Avatar = "no_avatar.png";
+
+            string randomDigits = new Random().Next(0, 6).ToString();
+
+            teacher.Code = $"CLG-420-{randomDigits}";
+
+            return View(teacher);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Teacher teacher)
+        {
+            if (ModelState.IsValid)
+            {
+                string randomDigits = new Random().Next(0, 6).ToString();
+
+                teacher.Code = $"CLG-420-{randomDigits}";
+
+                DB.Teachers.Add(teacher);
+
+                return RedirectToAction("TeachersDetails", new { id = teacher.Id });
+            }
+            return View(teacher);
+        }
+
+    }
+}

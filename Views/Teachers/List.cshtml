@@ -1,0 +1,104 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.PageTitle = "Teacher list";
+}
+
+<div id="TeacherListPanel" class="studentListLayout"></div>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <style>
+        .pageTitle a.cmdIcon,
+        .pageTitle a.cmdIcon:link,
+        .pageTitle a.cmdIcon:visited,
+        .pageTitle a.cmdIcon:hover,
+        .pageTitle a.cmdIcon:active {
+            color: #E8E8E8 !important;
+            text-decoration: none;
+        }
+
+            .pageTitle a.cmdIcon.active,
+            .pageTitle a.cmdIcon.active:link,
+            .pageTitle a.cmdIcon.active:visited,
+            .pageTitle a.cmdIcon.active:hover,
+            .pageTitle a.cmdIcon.active:active {
+                color: #000 !important;
+                font-weight: 700;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+
+        function teachersListPostRefresh() {
+
+            let search = $("#searchInput").val().trim().toLowerCase();
+
+            $(".teacherRow").each(function () {
+
+                let name = $(this).find(".teacherName").text().trim().toLowerCase();
+                let code = $(this).find(".teacherCode").text().trim().toLowerCase();
+
+                let matches =
+                    search.length === 0 ||
+                    name.includes(search) ||
+                    code.includes(search);
+
+                $(this).toggle(matches);
+            });
+
+            $("details[data-session]").each(function () {
+                let visible = $(this).find(".teacherRow:visible").length;
+                $(this).toggle(visible > 0);
+            });
+
+            if (search.length > 0) {
+                $(".teacherName, .teacherCode").each(function () {
+
+                    let original = $(this).text();
+                    let lower = original.toLowerCase();
+                    let index = lower.indexOf(search);
+
+                    if (index === -1) return;
+
+                    let before = original.substring(0, index);
+                    let match = original.substring(index, index + search.length);
+                    let after = original.substring(index + search.length);
+
+                    $(this).html(
+                        before +
+                        "<span style='background:yellow;'>" +
+                        match +
+                        "</span>" +
+                        after
+                    );
+                });
+            }
+
+            let openSessions = JSON.parse(sessionStorage.getItem("openTeacherDetails") || "[]");
+
+            $("details[data-session]").prop("open", false);
+
+            openSessions.forEach(s => {
+                $(`details[data-session="${s}"]`).prop("open", true);
+            });
+        }
+
+
+        let teachersListAutoRefreshPanel = null;
+
+        $(() => {
+
+            teachersListAutoRefreshPanel =
+                new AutoRefreshedPanel(
+                    "TeacherListPanel",
+                    "/Teachers/GetTeachers",
+                    5,
+                    teachersListPostRefresh
+                );
+        });
+
+    </script>
+}

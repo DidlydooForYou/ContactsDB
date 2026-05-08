@@ -1,0 +1,89 @@
+﻿@model Models.Course
+
+@{
+    List<Models.Student> registeredStudents = ViewBag.RegisteredStudents as List<Models.Student>
+                                            ?? new List<Models.Student>();
+
+    var yearsList = registeredStudents
+                    .Select(s => s.Year)
+                    .Distinct()
+                    .OrderByDescending(y => y)
+                    .ToList();
+
+    bool first = true;
+}
+
+<div style="width:100%; margin-top:10px; font-family:Arial;">
+
+    <details class="cohortBlock" open style="width:100%;">
+
+        <summary class="cohortHeader" style="width:100%; box-sizing:border-box;">
+            Informations - [@Model.Code]
+        </summary>
+
+        <div style="max-width:500px; margin:0 auto; padding:18px;">
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Code</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>Session @Model.Session</strong>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong>@Model.Title</strong>
+            </div>
+
+        </div>
+
+    </details>
+
+    <div style="background:#e5e5e5; padding:8px; font-weight:bold; margin-top:10px;">
+        <div style="padding-left:10px;">
+            Étudiants inscrits
+        </div>
+    </div>
+
+    <div class="studentList">
+
+        @foreach (int year in yearsList)
+        {
+            var students = registeredStudents.Where(s => s.Year == year).ToList();
+
+            if (students.Count > 0)
+            {
+                string open = first ? "open" : "";
+                first = false;
+
+                <details @open>
+                    <summary>Cohorte @year</summary>
+
+                    <div class="cohortStudents">
+
+                        @foreach (var item in students)
+                        {
+                            <div class="studentRow"
+                                 onclick="window.location='@Url.Action("GetStudentDetails", "Students", new { id = item.Id })'"
+                                 style="cursor:pointer;">
+
+                                <span class="studentCode" style="color:blue">
+                                    @item.Code
+                                </span>
+
+                                <span class="studentName">
+                                    @item.LastName @item.FirstName
+                                </span>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </details>
+            }
+        }
+
+    </div>
+
+</div>
