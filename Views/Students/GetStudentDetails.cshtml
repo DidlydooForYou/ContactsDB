@@ -1,4 +1,18 @@
 ﻿@model Models.Student
+@{
+    int studentYear = int.Parse(Model.Code.Substring(0, 4));
+
+    var validRegistrations = Model.Registrations
+        .Where(r => r.Year >= studentYear)
+        .ToList();
+
+    var yearsList = validRegistrations
+        .Select(r => r.Year)
+        .Distinct()
+        .OrderByDescending(y => y)
+        .ToList();
+}
+
 
 <div class="studentDetailsList">
 
@@ -27,7 +41,7 @@
 
             <div class="detailRow">
                 <i class="fa-solid fa-birthday-cake detailIcon"></i>
-                <span class="detailText" style="font-weight:bold;">@Model.BirthDate.ToString("dd MMMM yyyy")</span>
+                <span class="detailText" style="font-weight:bold;">@Model.BirthDate.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("fr-FR"))</span>
             </div>
 
         </div>
@@ -39,17 +53,15 @@
 
 <h2 class="inscriptionsTitle">Inscriptions</h2>
 
-@foreach (var year in Model.Registrations
-                         .Select(r => r.Year)
-                         .Distinct()
-                         .OrderByDescending(y => y))
+@foreach (var year in yearsList)
 {
     <details open>
         <summary>@year</summary>
 
         <div class="inscriptionsList">
-            @foreach (var reg in Model.Registrations.Where(r => r.Year == year)
-                                                    .OrderBy(r => r.Course.Session))
+            @foreach (var reg in validRegistrations
+                                .Where(r => r.Year == year)
+                                .OrderBy(r => r.Course.Session))
             {
                 var course = reg.Course;
 
@@ -65,6 +77,7 @@
         </div>
     </details>
 }
+
 
 @section Styles {
     <link rel="stylesheet" href="~/Content/site.css" />

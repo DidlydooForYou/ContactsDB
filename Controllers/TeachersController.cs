@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using static Controllers.AccessControl;
 
 namespace ContactsDB.Controllers
 {
@@ -46,12 +47,14 @@ namespace ContactsDB.Controllers
             return View(teacher);
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult Delete(int id)
         {
             DB.Teachers.Delete(id);
             return RedirectToAction("List");
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult TeachersEdit(int id)
         {
             var prof = DB.Teachers.Get(id);
@@ -59,6 +62,7 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult TeachersEdit(Teacher prof)
         {
             DB.Teachers.Update(prof);
@@ -66,7 +70,7 @@ namespace ContactsDB.Controllers
         }
 
 
-
+        [UserAccess(Access.Write)]
         public ActionResult Create()
         {
             ViewBag.ReturnUrl = Request.UrlReferrer?.ToString();
@@ -84,6 +88,7 @@ namespace ContactsDB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [UserAccess(Access.Write)]
         public ActionResult Create(Teacher teacher)
         {
             if (ModelState.IsValid)
@@ -100,6 +105,7 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult Edit(Teacher teacher, string SelectedCourseIds)
         {
             DB.Teachers.Update(teacher);

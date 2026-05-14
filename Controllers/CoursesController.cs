@@ -3,6 +3,7 @@ using Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using static Controllers.AccessControl;
 
 namespace ContactsDB.Controllers
 {
@@ -45,6 +46,7 @@ namespace ContactsDB.Controllers
 
             return View(course);
         }
+        [UserAccess(Access.Write)]
         public ActionResult CourseEdit(int id)
         {
             var course = DB.Courses.Get(id);
@@ -52,18 +54,21 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult CourseEdit(Course course)
         {
             DB.Courses.Update(course);
             return RedirectToAction("CourseDetails", new { id = course.Id });
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult Delete(int id)
         {
             DB.Courses.Delete(id);
             return RedirectToAction("List");
         }
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult Edit(Course course, string SelectedStudentIds)
         {
             DB.Courses.Update(course);

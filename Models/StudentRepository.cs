@@ -68,12 +68,5 @@ namespace Models
                 return false;
             }
         }
-
-        public bool ConfirmModify(Student student)
-        {
-            // This is a hook you can call BEFORE saving
-            // Example: show a modal, log changes, etc.
-            return true;
-        }
     }
 }

@@ -11,6 +11,13 @@
                     .ToList();
 
     bool first = true;
+
+    var teacherByYear = DAL.DB.Allocations.ToList()
+    .Where(a => a.CourseId == Model.Id).ToList() 
+    .GroupBy(a => a.Year)
+    .ToDictionary(g => g.Key, g => DAL.DB.Teachers.Get(g.First().TeacherId));
+
+
 }
 
 <div style="width:100%; margin-top:10px; font-family:Arial;">
@@ -57,7 +64,16 @@
                 first = false;
 
                 <details @open>
-                    <summary>Cohorte @year</summary>
+                    <summary>
+                        Cohorte @year
+                        @if (teacherByYear.ContainsKey(year))
+                        {
+                            var t = teacherByYear[year];
+                            <span style="color:#007bff; font-weight:bold;">
+                                – @t.LastName @t.FirstName
+                            </span>
+                        }
+                    </summary>
 
                     <div class="cohortStudents">
 
@@ -83,6 +99,7 @@
                 </details>
             }
         }
+
 
     </div>
 

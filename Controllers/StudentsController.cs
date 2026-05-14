@@ -56,6 +56,7 @@ namespace ContactsDB.Controllers
             return View(student);
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult StudentEdit(int id)
         {
             var student = DB.Students.Get(id);
@@ -63,6 +64,7 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult TeachersEdit(Student student)
         {
             DB.Students.Update(student);
@@ -99,6 +101,7 @@ namespace ContactsDB.Controllers
             return View(profs);
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult Create()
         {
             ViewBag.ReturnUrl = Request.UrlReferrer?.ToString();
@@ -119,6 +122,7 @@ namespace ContactsDB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [UserAccess(Access.Write)]
         public ActionResult Create(Student student)
         {
             if (ModelState.IsValid)
@@ -139,6 +143,7 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult Edit(Student student, string SelectedCourseIds)
         {
             DB.Students.Update(student);
