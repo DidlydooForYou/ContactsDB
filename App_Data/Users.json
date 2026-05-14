@@ -1,1 +1,90 @@
-[{"Name":"Modérateur","Email":"admin@app.net","Password":"S4VzJg+yuLVrtp6gTvyn4ZT5Z3BDVEiqJYgxJWe8Y/I=BkJ2SdJ4hagqUSGplfcYAiynSno=","Access":3,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/5aa8957d-e980-4cac-b915-aaa63d0909f1.jpeg","Id":1},{"Name":"Nicolas Maison","Email":"nicolaschourot@videotron.ca","Password":"S4VzJg+yuLVrtp6gTvyn4ZT5Z3BDVEiqJYgxJWe8Y/I=BkJ2SdJ4hagqUSGplfcYAiynSno=","Access":1,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/67e02a94-2b82-4d76-8396-9cac4db7308d.png","Id":2},{"Name":"Nicolas Collège","Email":"Nicolas.Chourot@clg.qc.ca","Password":"tkYDT83Dv265QZd1NlYZWbGxTQ71P3KALg9mNvQ4J0w=5mCEaNq34jdcMIMyjtkQoIp3VEg=","Access":3,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/13070465-e361-4d69-9073-06ebeb3c64ad.jpeg","Id":3},{"Name":"Luc Ledoux","Email":"Luc.Ledoux@yopmail.com","Password":"gY3UewdTRwKcDvx16EpLMgca/W4Ca8JhU+x0r+AKGl4=IFkPf72tHsqRbUGa0nKlHtqCtgM=","Access":1,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/32705cf0-2e95-4362-bce7-7d77cb8d4b84.jpeg","Id":5},{"Name":"Francois Simard","Email":"Francois.Simard@yopmail.com","Password":"SYFHSR0OX2rs8gIfvFzBWecvW4twpGFm0WMWS5QUX5Q=vv6vLg8q9sT/uhJ89ry8SmuBz5w=","Access":3,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/156ab756-729a-4dc9-ae1d-cdda8ccfd00d.jpeg","Id":6},{"Name":"Patrice Roy","Email":"Patrice.Roy@yopmail.com","Password":"MpGKhPvMR/1jhJi6quLPQkpfuuho0kmjS29nz4PR7+E=/0EqOYVJSpaONj0QxQ0DmC0PM5s=","Access":1,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/42c2ab89-8bff-457f-9592-0e2321b08511.jpeg","Id":7},{"Name":"�tienne Forest","Email":"Etienne.Forest@yopmail.com","Password":"WOxmKLfwJvQKtI3kmIMufZ0YaGr3Sp/6b16NyuC1LIA=5aMR6u4VNyCX9EoxgUK81bmCAjw=","Access":1,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/8b12ca6f-f732-440c-b7db-ccb07e1fdcae.png","Id":8},{"Name":"Lina Jabour","Email":"Liba.Jabour@yopmail.com","Password":"ij+zl3z0mDKVQ4w234AQBgveMEKmiU3IAMs03NAmL7s=IRVVnGF/owV1lNlMMx9p8qn1zU8=","Access":1,"Blocked":false,"Verified":true,"Notify":true,"Avatar":"/App_Assets/Users/a85fbd9a-5340-4053-a4c5-c7d491df7afe.jpeg","Id":9}]
+[
+  {
+    "Name": "Modérateur",
+    "Email": "admin@app.net",
+    "Password": "S4VzJg+yuLVrtp6gTvyn4ZT5Z3BDVEiqJYgxJWe8Y/I=BkJ2SdJ4hagqUSGplfcYAiynSno=",
+    "Access": 3,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/5aa8957d-e980-4cac-b915-aaa63d0909f1.jpeg",
+    "Id": 1
+  },
+  {
+    "Name": "Nicolas Maison",
+    "Email": "nicolaschourot@videotron.ca",
+    "Password": "S4VzJg+yuLVrtp6gTvyn4ZT5Z3BDVEiqJYgxJWe8Y/I=BkJ2SdJ4hagqUSGplfcYAiynSno=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/67e02a94-2b82-4d76-8396-9cac4db7308d.png",
+    "Id": 2
+  },
+  {
+    "Name": "Nicolas Collège",
+    "Email": "Nicolas.Chourot@clg.qc.ca",
+    "Password": "tkYDT83Dv265QZd1NlYZWbGxTQ71P3KALg9mNvQ4J0w=5mCEaNq34jdcMIMyjtkQoIp3VEg=",
+    "Access": 3,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/13070465-e361-4d69-9073-06ebeb3c64ad.jpeg",
+    "Id": 3
+  },
+  {
+    "Name": "Luc Ledoux",
+    "Email": "Luc.Ledoux@yopmail.com",
+    "Password": "gY3UewdTRwKcDvx16EpLMgca/W4Ca8JhU+x0r+AKGl4=IFkPf72tHsqRbUGa0nKlHtqCtgM=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/32705cf0-2e95-4362-bce7-7d77cb8d4b84.jpeg",
+    "Id": 5
+  },
+  {
+    "Name": "Francois Simard",
+    "Email": "Francois.Simard@yopmail.com",
+    "Password": "SYFHSR0OX2rs8gIfvFzBWecvW4twpGFm0WMWS5QUX5Q=vv6vLg8q9sT/uhJ89ry8SmuBz5w=",
+    "Access": 3,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/156ab756-729a-4dc9-ae1d-cdda8ccfd00d.jpeg",
+    "Id": 6
+  },
+  {
+    "Name": "Patrice Roy",
+    "Email": "Patrice.Roy@yopmail.com",
+    "Password": "MpGKhPvMR/1jhJi6quLPQkpfuuho0kmjS29nz4PR7+E=/0EqOYVJSpaONj0QxQ0DmC0PM5s=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/42c2ab89-8bff-457f-9592-0e2321b08511.jpeg",
+    "Id": 7
+  },
+  {
+    "Name": "�tienne Forest",
+    "Email": "Etienne.Forest@yopmail.com",
+    "Password": "WOxmKLfwJvQKtI3kmIMufZ0YaGr3Sp/6b16NyuC1LIA=5aMR6u4VNyCX9EoxgUK81bmCAjw=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/8b12ca6f-f732-440c-b7db-ccb07e1fdcae.png",
+    "Id": 8
+  },
+  {
+    "Name": "Lina Jabour",
+    "Email": "Liba.Jabour@yopmail.com",
+    "Password": "ij+zl3z0mDKVQ4w234AQBgveMEKmiU3IAMs03NAmL7s=IRVVnGF/owV1lNlMMx9p8qn1zU8=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/a85fbd9a-5340-4053-a4c5-c7d491df7afe.jpeg",
+    "Id": 9
+  }
+]

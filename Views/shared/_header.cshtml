@@ -174,15 +174,18 @@
 
                 if (action.ToLower() == "getstudentdetails")
                 {
-                    <a href="@Url.Action("StudentEdit", "Students", new { id = Model.Id })"
-                       class="cmdIcon fa fa-pen-to-square"
-                       title="Modifier..."></a>
+                    if (userCanWrite)
+                    {
+                        <a href="@Url.Action("StudentEdit", "Students", new { id = Model.Id })"
+                           class="cmdIcon fa fa-pen-to-square"
+                           title="Modifier..."></a>
 
-                    <i class="cmdIcon fa fa-trash-can"
-                       title="Effacer"
-                       style="color:dodgerblue;"
-                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Students/Delete/@id'; })">
-                    </i>
+                        <i class="cmdIcon fa fa-trash-can"
+                           title="Effacer"
+                           style="color:dodgerblue;"
+                           onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Students/Delete/@id'; })">
+                        </i>
+                    }
 
                     <a href="@Url.Action("List", "Students")"
                        class="cmdIcon fa fa-square-xmark"
@@ -191,15 +194,18 @@
 
                 if (action.ToLower() == "teachersdetails")
                 {
-                    <a href="@Url.Action("TeachersEdit", "Teachers", new { id = Model.Id })"
-                       class="cmdIcon fa fa-pen-to-square"
-                       title="Modifier..."></a>
+                    if (userCanWrite)
+                    {
+                        <a href="@Url.Action("TeachersEdit", "Teachers", new { id = Model.Id })"
+                           class="cmdIcon fa fa-pen-to-square"
+                           title="Modifier..."></a>
 
-                    <i class="cmdIcon fa fa-trash-can"
-                       title="Effacer"
-                       style="color:dodgerblue;"
-                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Teachers/Delete/@id'; })">
-                    </i>
+                        <i class="cmdIcon fa fa-trash-can"
+                           title="Effacer"
+                           style="color:dodgerblue;"
+                           onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Teachers/Delete/@id'; })">
+                        </i>
+                    }
 
                     <a href="@Url.Action("List", "Teachers")"
                        class="cmdIcon fa fa-square-xmark"
@@ -208,15 +214,18 @@
 
                 if (action.ToLower() == "coursedetails")
                 {
-                    <a href="@Url.Action("CourseEdit", "Courses", new { id = Model.Id })"
-                       class="cmdIcon fa fa-pen-to-square"
-                       title="Modifier..."></a>
+                    if (userCanWrite)
+                    {
+                        <a href="@Url.Action("CourseEdit", "Courses", new { id = Model.Id })"
+                           class="cmdIcon fa fa-pen-to-square"
+                           title="Modifier..."></a>
 
-                    <i class="cmdIcon fa fa-trash-can"
-                       title="Effacer"
-                       style="color:dodgerblue;"
-                       onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Courses/Delete/@id'; })">
-                    </i>
+                        <i class="cmdIcon fa fa-trash-can"
+                           title="Effacer"
+                           style="color:dodgerblue;"
+                           onclick="bootbox.confirm(`<b style=color:red>Effacer ?`, function(result){ if (result) window.location = '/Courses/Delete/@id'; })">
+                        </i>
+                    }
 
                     <a href="@Url.Action("List", "Courses")"
                        class="cmdIcon fa fa-square-xmark"

@@ -3,12 +3,6 @@
 @using DAL;
 
 @{
-    var allCourses = DB.Courses.ToList();
-    var registeredIds = Model.Registrations.Select(r => r.CourseId).ToList();
-
-    var selectedCourses = allCourses.Where(c => registeredIds.Contains(c.Id)).ToList();
-    var availableCourses = allCourses.Where(c => !registeredIds.Contains(c.Id)).ToList();
-
     var currentYear = Session["CurrentYear"] != null
     ? Session["CurrentYear"].ToString()
     : Models.NextSession.Year.ToString();
@@ -16,6 +10,17 @@
     var currentSession = Session["CurrentSession"] != null
         ? Session["CurrentSession"].ToString()
         : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
+
+    var allCourses = DB.Courses.ToList().Where(c =>
+        (currentSession == "Automne" && c.Session % 2 == 1) ||
+        (currentSession == "Hiver" && c.Session % 2 == 0)
+    ).ToList();
+
+
+    var registeredIds = Model.Registrations.Select(r => r.CourseId).ToList();
+
+    var selectedCourses = allCourses.Where(c => registeredIds.Contains(c.Id)).ToList();
+    var availableCourses = allCourses.Where(c => !registeredIds.Contains(c.Id)).ToList();
 }
 
 @using (Html.BeginForm("Edit", "Students", FormMethod.Post))
@@ -166,13 +171,13 @@
             transition: all 0.3s ease;
         }
 
-        .cohortBlock:not([open]) + #registrationsDetails .dualListContainer {
+        .cohortBlock:not([open]) + #allocationsDetails .dualListContainer {
             flex-direction: column;
             align-items: stretch;
             width: 100%;
         }
 
-            .cohortBlock:not([open]) + #registrationsDetails .dualListContainer select {
+            .cohortBlock:not([open]) + #allocationsDetails .dualListContainer select {
                 width: 100%;
                 margin-top: 10px;
                 border-radius: 5px;
@@ -182,7 +187,7 @@
                 padding-bottom: 5px;
             }
 
-        .cohortBlock[open] + #registrationsDetails .dualListContainer select {
+        .cohortBlock[open] + #allocationsDetails .dualListContainer select {
             width: 100%;
             margin-top: 10px;
             border-radius: 5px;
@@ -192,19 +197,19 @@
             padding-bottom: 5px;
         }
 
-
-        .cohortBlock:not([open]) + #registrationsDetails .arrowAdd i {
+        .cohortBlock:not([open]) + #allocationsDetails .arrowAdd i {
             transform: rotate(90deg);
         }
 
-        .cohortBlock:not([open]) + #registrationsDetails .arrowRemove i {
+        .cohortBlock:not([open]) + #allocationsDetails .arrowRemove i {
             transform: rotate(90deg);
         }
 
-        .cohortBlock:not([open]) + #registrationsDetails .dualListButtons {
+        .cohortBlock:not([open]) + #allocationsDetails .dualListButtons {
             flex-direction: row;
             justify-content: center;
         }
+
 
         .dualListBox {
             width: 260px;

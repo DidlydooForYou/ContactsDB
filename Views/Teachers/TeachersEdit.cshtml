@@ -3,12 +3,6 @@
 @using DAL;
 
 @{
-    var allCourses = DB.Courses.ToList();
-    var allocatedIds = Model.Allocations.Select(a => a.CourseId).ToList();
-
-    var selectedCourses = allCourses.Where(c => allocatedIds.Contains(c.Id)).ToList();
-    var availableCourses = allCourses.Where(c => !allocatedIds.Contains(c.Id)).ToList();
-
     var currentYear = Session["CurrentYear"] != null
         ? Session["CurrentYear"].ToString()
         : Models.NextSession.Year.ToString();
@@ -16,6 +10,16 @@
     var currentSession = Session["CurrentSession"] != null
         ? Session["CurrentSession"].ToString()
         : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
+
+    var allCourses = DB.Courses.ToList().Where(c =>
+    (currentSession == "Automne" && c.Session % 2 == 1) ||
+    (currentSession == "Hiver" && c.Session % 2 == 0)
+    ).ToList();
+
+    var allocatedIds = Model.Allocations.Select(a => a.CourseId).ToList();
+
+    var selectedCourses = allCourses.Where(c => allocatedIds.Contains(c.Id)).ToList();
+    var availableCourses = allCourses.Where(c => !allocatedIds.Contains(c.Id)).ToList();
 }
 
 @using (Html.BeginForm())
