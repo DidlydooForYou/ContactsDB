@@ -23,7 +23,7 @@
     var availableCourses = allCourses.Where(c => !registeredIds.Contains(c.Id)).ToList();
 }
 
-@using (Html.BeginForm("Edit", "Students", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Students", FormMethod.Post, new { id = "ajouterRetirerCours" }))
 {
     <input type="hidden" name="Id" value="@Model.Id" />
     <input type="hidden" name="Code" value="@Model.Code" />
@@ -58,7 +58,6 @@
             Inscriptions : Session @currentSession @currentYear
         </summary>
 
-
         <div class="dualListContainer">
 
             <select id="selectedCourses" multiple size="12" class="dualListBox">
@@ -69,20 +68,35 @@
             </select>
 
             <div class="dualListButtons">
-                <button type="button" id="btnAdd" class="iconButton arrowAdd" style="display:none; background-color:#007bff;">
+
+                <button type="button"
+                        id="btnAdd"
+                        class="iconButton arrowAdd"
+                        style="display:none; background-color:#007bff;">
+
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
 
-                <button type="button" id="btnRemove" class="iconButton arrowRemove" style="display:none; background-color:#007bff;">
+                <button type="button"
+                        id="btnRemove"
+                        class="iconButton arrowRemove"
+                        style="display:none; background-color:#007bff;">
+
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
 
-                <button type="button" id="btnCancel" class="iconButton" style="background-color: transparent !important; font-size:30px ; display: none; color: #007bff; ">
+                <button type="button"
+                        id="btnCancel"
+                        class="iconButton"
+                        style="background-color: transparent !important;
+                               font-size:30px;
+                               display: none;
+                               color: #007bff; ">
+
                     <i class="fa-solid fa-xmark"></i>
                 </button>
+
             </div>
-
-
 
             <select id="availableCourses" multiple size="12" class="dualListBox">
                 @foreach (var c in availableCourses)
@@ -93,16 +107,20 @@
 
         </div>
     </details>
-
 }
 
 @section Scripts{
     <script>
+
         const selected = document.getElementById("selectedCourses");
         const available = document.getElementById("availableCourses");
+
         const btnAdd = document.getElementById("btnAdd");
         const btnRemove = document.getElementById("btnRemove");
         const btnCancel = document.getElementById("btnCancel");
+
+        const form = document.getElementById("ajouterRetirerCours");
+        const hiddenSelectedCourseIds = document.getElementById("SelectedCourseIds");
 
         let activeList = null;
 
@@ -113,38 +131,58 @@
         available.addEventListener("change", updateCancelVisibility);
 
         function setActive(list) {
+
             activeList = list;
 
-            btnAdd.style.display = list === available ? "inline-block" : "none";
-            btnRemove.style.display = list === selected ? "inline-block" : "none";
+            btnAdd.style.display =
+                list === available ? "inline-block" : "none";
+
+            btnRemove.style.display =
+                list === selected ? "inline-block" : "none";
 
             updateCancelVisibility();
         }
 
         function updateCancelVisibility() {
+
             const hasSelection =
                 selected.selectedOptions.length > 0 ||
                 available.selectedOptions.length > 0;
 
-            btnCancel.style.display = hasSelection ? "inline-block" : "none";
+            btnCancel.style.display =
+                hasSelection ? "inline-block" : "none";
         }
 
         btnAdd.onclick = () => moveSelected(available, selected);
+
         btnRemove.onclick = () => moveSelected(selected, available);
+
         btnCancel.onclick = () => location.reload();
 
         function moveSelected(from, to) {
+
             [...from.selectedOptions].forEach(opt => to.appendChild(opt));
+
             updateCancelVisibility();
         }
+
+        form.addEventListener("submit", function () {
+
+            const ids =
+                [...selected.options].map(opt => opt.value);
+
+            hiddenSelectedCourseIds.value = ids.join(",");
+        });
 
     </script>
 }
 
-
 @section Styles {
+
     <link rel="stylesheet" href="~/Content/site.css" />
+
     <style>
+
         .pageTitle a.cmdIcon,
         .pageTitle a.cmdIcon:link,
         .pageTitle a.cmdIcon:visited,
@@ -209,7 +247,6 @@
             flex-direction: row;
             justify-content: center;
         }
-
 
         .dualListBox {
             width: 260px;

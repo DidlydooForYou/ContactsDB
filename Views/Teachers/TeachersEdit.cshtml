@@ -22,7 +22,7 @@
     var availableCourses = allCourses.Where(c => !allocatedIds.Contains(c.Id)).ToList();
 }
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Teachers", FormMethod.Post, new { id = "AjouterRetirerCoursProf" }))
 {
     <input type="hidden" name="Id" value="@Model.Id" />
     <input type="hidden" name="Code" value="@Model.Code" />
@@ -103,6 +103,9 @@
         const btnRemove = document.getElementById("btnRemove");
         const btnCancel = document.getElementById("btnCancel");
 
+        const form = document.getElementById("AjouterRetirerCoursProf");
+        const hiddenSelectedCourseIds = document.getElementById("SelectedCourseIds");
+
         let activeList = null;
 
         selected.addEventListener("click", () => setActive(selected));
@@ -136,6 +139,15 @@
             [...from.selectedOptions].forEach(opt => to.appendChild(opt));
             updateCancelVisibility();
         }
+
+        form.addEventListener("submit", function () {
+
+            const ids =
+                [...selected.options].map(opt => opt.value);
+
+            hiddenSelectedCourseIds.value =
+                ids.join(",");
+        });
 
     </script>
 }

@@ -82,6 +82,14 @@
                 {
                     title = "Journal d'activités";
                 }
+                else if (action.ToLower() == "login")
+                {
+                    title = "Connexion";
+                }
+                else if (action.ToLower() == "create")
+                {
+                    title += " - Creation";
+                }
 
                 <span class="title-text" style="font-weight:bold;">@title</span>
             }
@@ -90,16 +98,16 @@
 
         <div id="mainMenuPanel" class="menu ms-auto">
 
-            @if (action.ToLower() == "list" ||
-                 action.ToLower() == "getteachers" ||
-                 action.ToLower() == "getcourses")
+            @if (action.ToLower() == "list")
             {
-
-                if (userCanWrite)
+                if (controller.Equals("Students", StringComparison.OrdinalIgnoreCase) || controller.Equals("Teachers", StringComparison.OrdinalIgnoreCase))
                 {
-                    <a href="/@controller/Create"
-                       class="cmdIcon fa fa-circle-plus"
-                       title="Ajouter..."></a>
+                    if (userCanWrite)
+                    {
+                        <a href="/@controller/Create"
+                           class="cmdIcon fa fa-circle-plus"
+                           title="Ajouter..."></a>
+                    }
                 }
 
                 <a href="/@controller/ToggleSearch"
@@ -236,7 +244,7 @@
             @if (action.ToLower() == "studentedit")
             {
                 <button type="submit"
-                        form="form0"
+                        form="ajouterRetirerCours"
                         class="cmdIcon fa fa-check-circle"
                         style="color:dodgerblue; font-size:20px;"
                         title="Enregistrer"></button>
@@ -249,7 +257,7 @@
             @if (action.ToLower() == "teachersedit")
             {
                 <button type="submit"
-                        form="form0"
+                        form="AjouterRetirerCoursProf"
                         class="cmdIcon fa fa-check-circle"
                         style="color:dodgerblue; font-size:20px;"
                         title="Enregistrer"></button>
@@ -262,7 +270,7 @@
             @if (action.ToLower() == "courseedit")
             {
                 <button type="submit"
-                        form="form0"
+                        form="AjouterRetirerElevesCours"
                         class="cmdIcon fa fa-check-circle"
                         style="color:dodgerblue; font-size:20px;"
                         title="Enregistrer"></button>
@@ -280,7 +288,7 @@
                         style="color:dodgerblue; font-size:20px;"
                         title="Enregistrer"></button>
 
-                <a href="@Url.Action("List", "Students")"
+                <a href="@ViewBag.ReturnUrl"
                    class="cmdIcon fa fa-square-xmark"
                    title="Annuler"></a>
             }
@@ -292,6 +300,19 @@
                 <a href="/Students/List"
                    class="cmdIcon fa fa-square-xmark"
                    title="Retour"></a>
+            }
+
+            @if (action.ToLower() == "create")
+            {
+                <button type="submit"
+                        form="form0"
+                        class="cmdIcon fa fa-check-circle"
+                        style="color:dodgerblue; font-size:20px;"
+                        title="Enregistrer"></button>
+
+                <a href="@ViewBag.ReturnUrl"
+                   class="cmdIcon fa fa-square-xmark"
+                   title="Annuler"></a>
             }
 
         </div>

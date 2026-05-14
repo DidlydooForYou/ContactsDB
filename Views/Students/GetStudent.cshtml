@@ -60,4 +60,16 @@
 
         studentsListPostRefresh();
     });
+    $(document).on("toggle", "details[data-year], details[data-session]", function () {
+        let openYears = $("details[data-year][open]").map(function () {
+            return $(this).data("year").toString();
+        }).get();
+        let openSessions = $("details[data-session][open]").map(function () {
+            return $(this).data("session").toString();
+        }).get();
+
+        sessionStorage.setItem("openYears", JSON.stringify(openYears));
+        sessionStorage.setItem("openSessions", JSON.stringify(openSessions));
+    });
+
 </script>

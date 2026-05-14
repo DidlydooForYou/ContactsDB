@@ -1,5 +1,7 @@
 ﻿@model Models.Course
 
+@using DAL;
+
 @{
     var allStudents = DAL.DB.Students.ToList();
     var registeredIds = Model.Registrations.Select(r => r.StudentId).ToList();
@@ -17,70 +19,82 @@
         : (Models.NextSession.ValidSessions.Contains(1) ? "Automne" : "Hiver");
 }
 
-<div style="width:100%; margin-top:10px; font-family:Arial;">
+@using (Html.BeginForm("Edit", "Courses", FormMethod.Post, new { id = "AjouterRetirerElevesCours" }))
+{
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="Code" value="@Model.Code" />
+    <input type="hidden" name="Title" value="@Model.Title" />
+    <input type="hidden" name="Session" value="@Model.Session" />
 
-    <details class="cohortBlock" open style="width:100%;">
+    <input type="hidden"
+           id="SelectedStudentIds"
+           name="SelectedStudentIds" />
 
-        <summary class="cohortHeader" style="width:calc(100% - 20px); margin:0 10px; box-sizing:border-box;">
-            @Model.Title
-        </summary>
+    <div style="width:100%; margin-top:10px; font-family:Arial;">
 
-        <div style="padding:18px;">
+        <details class="cohortBlock" open style="width:100%;">
 
-            <div style="margin-bottom:12px;">
-                <strong>@Model.Code</strong>
+            <summary class="cohortHeader" style="width:calc(100% - 20px); margin:0 10px; box-sizing:border-box;">
+                @Model.Title
+            </summary>
+
+            <div style="padding:18px;">
+
+                <div style="margin-bottom:12px;">
+                    <strong>@Model.Code</strong>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <strong>Session @Model.Session</strong>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <strong>@Model.Title</strong>
+                </div>
+
             </div>
 
-            <div style="margin-bottom:12px;">
-                <strong>Session @Model.Session</strong>
+        </details>
+
+        <details id="registrationsDetails">
+            <summary class="cohortHeader">
+                Inscriptions des étudiants – @Model.Code
+            </summary>
+
+            <div class="dualListContainer">
+
+                <select id="selectedStudents" multiple size="12" class="dualListBox">
+                    @foreach (var s in selectedStudents)
+                    {
+                        <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
+                    }
+                </select>
+
+                <div class="dualListButtons">
+                    <button type="button" id="btnAdd" class="iconButton arrowAdd" style="display:none; background-color:#007bff;">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+
+                    <button type="button" id="btnRemove" class="iconButton arrowRemove" style="display:none; background-color:#007bff;">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <button type="button" id="btnCancel" class="iconButton" style="background-color: transparent !important; font-size:30px ; display: none; color: #007bff; ">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <select id="availableStudents" multiple size="12" class="dualListBox">
+                    @foreach (var s in availableStudents)
+                    {
+                        <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
+                    }
+                </select>
+
             </div>
-
-            <div style="margin-bottom:12px;">
-                <strong>@Model.Title</strong>
-            </div>
-
-        </div>
-
-    </details>
-
-    <details id="registrationsDetails">
-        <summary class="cohortHeader">
-            Inscriptions des étudiants – @Model.Code
-        </summary>
-
-        <div class="dualListContainer">
-
-            <select id="selectedStudents" multiple size="12" class="dualListBox">
-                @foreach (var s in selectedStudents)
-                {
-                    <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
-                }
-            </select>
-
-            <div class="dualListButtons">
-                <button type="button" id="btnAdd" class="iconButton arrowAdd" style="display:none; background-color:#007bff;">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-
-                <button type="button" id="btnRemove" class="iconButton arrowRemove" style="display:none; background-color:#007bff;">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-
-                <button type="button" id="btnCancel" class="iconButton" style="background-color: transparent !important; font-size:30px ; display: none; color: #007bff; ">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <select id="availableStudents" multiple size="12" class="dualListBox">
-                @foreach (var s in availableStudents)
-                {
-                    <option value="@s.Id">@s.Code @s.LastName @s.FirstName</option>
-                }
-            </select>
-
-        </div>
-    </details>
-</div>
+        </details>
+    </div>
+}
 
 @section Scripts{
     <script>
@@ -89,6 +103,11 @@
         const btnAdd = document.getElementById("btnAdd");
         const btnRemove = document.getElementById("btnRemove");
         const btnCancel = document.getElementById("btnCancel");
+
+        const form = document.getElementById("AjouterRetirerElevesCours");
+
+        const hiddenSelectedStudentIds =
+            document.getElementById("SelectedStudentIds");
 
         let activeList = null;
 
@@ -123,6 +142,15 @@
             [...from.selectedOptions].forEach(opt => to.appendChild(opt));
             updateCancelVisibility();
         }
+
+        form.addEventListener("submit", function () {
+
+            const ids =
+                [...selected.options].map(opt => opt.value);
+
+            hiddenSelectedStudentIds.value =
+                ids.join(",");
+        });
 
     </script>
 }
@@ -179,8 +207,8 @@
             border-radius: 5px;
             padding-right: 15px;
             padding-left: 15px;
-            padding-top:5px;
-            padding-bottom:5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
 

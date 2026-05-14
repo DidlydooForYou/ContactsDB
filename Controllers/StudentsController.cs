@@ -1,8 +1,11 @@
 ﻿using DAL;
 using Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web.ModelBinding;
 using System.Web.Mvc;
+using static Controllers.AccessControl;
 
 namespace ContactsDB.Controllers
 {
@@ -66,8 +69,10 @@ namespace ContactsDB.Controllers
             return RedirectToAction("GetStudentDetails", new { id = student.Id });
         }
 
+        [UserAccess(Access.Write)]
         public ActionResult SessionCourante()
         {
+            ViewBag.ReturnUrl = Request.UrlReferrer?.ToString();
             var model = new SessionCourante
             {
                 Annee = Session["CurrentYear"] != null ? (int)Session["CurrentYear"] : NextSession.Year,
@@ -79,6 +84,7 @@ namespace ContactsDB.Controllers
         }
 
         [HttpPost]
+        [UserAccess(Access.Write)]
         public ActionResult SessionCourante(SessionCourante model)
         {
             Session["CurrentYear"] = model.Annee;
@@ -95,6 +101,7 @@ namespace ContactsDB.Controllers
 
         public ActionResult Create()
         {
+            ViewBag.ReturnUrl = Request.UrlReferrer?.ToString();
             Student student = new Student();
             student.BirthDate = DateTime.Now;
 
@@ -129,6 +136,47 @@ namespace ContactsDB.Controllers
                 return RedirectToAction("GetStudentDetails", new { id = student.Id });
             }
             return View(student);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Student student, string SelectedCourseIds)
+        {
+            DB.Students.Update(student);
+
+            int currentYear = Session["CurrentYear"] != null
+                ? int.Parse(Session["CurrentYear"].ToString())
+                : NextSession.Year;
+
+            List<int> selectedIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(SelectedCourseIds))
+            {
+                selectedIds = SelectedCourseIds
+                    .Split(',')
+                    .Select(id => int.Parse(id))
+                    .ToList();
+            }
+
+            var registrations = DB.Registrations.ToList()
+                .Where(r => r.StudentId == student.Id && r.Year == currentYear)
+                .ToList();
+
+            foreach (var registration in registrations)
+            {
+                DB.Registrations.Delete(registration.Id);
+            }
+
+            foreach (int courseId in selectedIds)
+            {
+                DB.Registrations.Add(new Registration
+                {
+                    StudentId = student.Id,
+                    CourseId = courseId,
+                    Year = currentYear
+                });
+            }
+
+            return RedirectToAction("GetStudentDetails", new { id = student.Id });
         }
     }
 }

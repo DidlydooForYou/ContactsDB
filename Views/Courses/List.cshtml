@@ -43,7 +43,7 @@
 
                 let matches =
                     search.length === 0 ||
-                    title.includes(search) 
+                    title.includes(search);
 
                 $(this).toggle(matches);
             });
@@ -52,6 +52,10 @@
                 let visible = $(this).find(".studentRow:visible").length;
                 $(this).toggle(visible > 0);
             });
+
+            if (search.length > 0) {
+                $("details[data-session]").prop("open", true);
+            }
 
             if (search.length > 0) {
                 $(".studentName, .studentCode").each(function () {
@@ -76,7 +80,12 @@
             openSessions.forEach(s => {
                 $(`details[data-session="${s}"]`).prop("open", true);
             });
+
+            if (search.length > 0) {
+                $("details[data-session]").prop("open", true);
+            }
         }
+
 
 
         let coursesListAutoRefreshPanel = null;

@@ -66,6 +66,10 @@
             });
 
             if (search.length > 0) {
+                $("details[data-year]").prop("open", true);
+            }
+
+            if (search.length > 0) {
                 $(".studentName").each(function () {
                     let original = $(this).text();
                     let lower = original.toLowerCase();
@@ -87,7 +91,12 @@
             openYears.forEach(y => {
                 $(`details[data-year="${y}"]`).prop("open", true);
             });
+
+            if (search.length > 0) {
+                $("details[data-year]").prop("open", true);
+            }
         }
+
 
 
         let studentsListAutoRefreshPanel = null;
@@ -102,6 +111,5 @@
                     studentsListPostRefresh
                 );
         });
-
     </script>
 }

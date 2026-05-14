@@ -45,7 +45,6 @@ namespace ContactsDB.Controllers
 
             return View(course);
         }
-
         public ActionResult CourseEdit(int id)
         {
             var course = DB.Courses.Get(id);
@@ -63,6 +62,47 @@ namespace ContactsDB.Controllers
         {
             DB.Courses.Delete(id);
             return RedirectToAction("List");
+        }
+        [HttpPost]
+        public ActionResult Edit(Course course, string SelectedStudentIds)
+        {
+            DB.Courses.Update(course);
+
+            int currentYear = Session["CurrentYear"] != null
+                ? int.Parse(Session["CurrentYear"].ToString())
+                : NextSession.Year;
+
+            List<int> selectedIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(SelectedStudentIds))
+            {
+                selectedIds = SelectedStudentIds
+                    .Split(',')
+                    .Select(id => int.Parse(id))
+                    .ToList();
+            }
+
+            var registrations = DB.Registrations.ToList()
+                .Where(r => r.CourseId == course.Id &&
+                            r.Year == currentYear)
+                .ToList();
+
+            foreach (var registration in registrations)
+            {
+                DB.Registrations.Delete(registration.Id);
+            }
+
+            foreach (int studentId in selectedIds)
+            {
+                DB.Registrations.Add(new Registration
+                {
+                    StudentId = studentId,
+                    CourseId = course.Id,
+                    Year = currentYear
+                });
+            }
+
+            return RedirectToAction("CourseDetails", new { id = course.Id });
         }
     }
 }

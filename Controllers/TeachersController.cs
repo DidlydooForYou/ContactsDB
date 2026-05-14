@@ -69,6 +69,7 @@ namespace ContactsDB.Controllers
 
         public ActionResult Create()
         {
+            ViewBag.ReturnUrl = Request.UrlReferrer?.ToString();
             Teacher teacher = new Teacher();
 
             teacher.StartDate = DateTime.Now;
@@ -98,5 +99,46 @@ namespace ContactsDB.Controllers
             return View(teacher);
         }
 
+        [HttpPost]
+        public ActionResult Edit(Teacher teacher, string SelectedCourseIds)
+        {
+            DB.Teachers.Update(teacher);
+
+            int currentYear = Session["CurrentYear"] != null
+                ? int.Parse(Session["CurrentYear"].ToString())
+                : NextSession.Year;
+
+            List<int> selectedIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(SelectedCourseIds))
+            {
+                selectedIds = SelectedCourseIds
+                    .Split(',')
+                    .Select(id => int.Parse(id))
+                    .ToList();
+            }
+
+            var allocations = DB.Allocations.ToList()
+                .Where(a => a.TeacherId == teacher.Id &&
+                            a.Year == currentYear)
+                .ToList();
+
+            foreach (var allocation in allocations)
+            {
+                DB.Allocations.Delete(allocation.Id);
+            }
+
+            foreach (int courseId in selectedIds)
+            {
+                DB.Allocations.Add(new Allocation
+                {
+                    TeacherId = teacher.Id,
+                    CourseId = courseId,
+                    Year = currentYear
+                });
+            }
+
+            return RedirectToAction("TeachersDetails", new { id = teacher.Id });
+        }
     }
 }
