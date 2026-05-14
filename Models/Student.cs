@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Models
@@ -60,8 +61,12 @@ namespace Models
             if (!HasRequiredLength(Email, 1)) return false;
             if (!HasRequiredLength(Phone, 1)) return false;
 
-            if (DB.Students.ToList().Where(s => s.Code == Code && s.Id != Id).Any()) return false;
-            if (DB.Students.ToList().Where(s => s.Email == Email && s.Id != Id).Any()) return false;
+            if (BirthDate > DateTime.Today) return false;
+            if (BirthDate < DateTime.Today.AddYears(-120)) return false;
+            if (BirthDate > DateTime.Today.AddYears(-17)) return false;
+
+            if (DB.Students.ToList().Any(s => s.Code == Code && s.Id != Id)) return false;
+            if (DB.Students.ToList().Any(s => s.Email == Email && s.Id != Id)) return false;
 
             return true;
         }

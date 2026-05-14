@@ -79,7 +79,7 @@ namespace ContactsDB.Controllers
             teacher.StartDate = DateTime.Now;
             teacher.Avatar = "no_avatar.png";
 
-            string randomDigits = new Random().Next(0, 6).ToString();
+            string randomDigits = new Random().Next(100000, 999999).ToString();
 
             teacher.Code = $"CLG-420-{randomDigits}";
 

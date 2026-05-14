@@ -1,6 +1,7 @@
 ﻿using DAL;
 using System;
 using System.Linq;
+using System.Web.Helpers;
 
 namespace Models
 {
@@ -13,35 +14,35 @@ namespace Models
 
         public override bool Update(Student student)
         {
-            try
-            {
-                BeginTransaction();
-
-                Student stored = Get(student.Id);
-                if (stored == null)
-                {
-                    EndTransaction();
-                    return false;
-                }
-
-                stored.FirstName = student.FirstName;
-                stored.LastName = student.LastName;
-                stored.Email = student.Email;
-                stored.Phone = student.Phone;
-                stored.BirthDate = student.BirthDate;
-
-                bool result = base.Update(stored);
-
-                EndTransaction();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Student update failed: {ex.Message}");
-                EndTransaction();
+            Student stored = Get(student.Id);
+            if (stored == null)
                 return false;
+
+            if (ToList().Any(s =>
+                s.Id != student.Id &&
+                !string.IsNullOrWhiteSpace(s.Email) &&
+                s.Email.Equals(student.Email, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new Exception("Ce courriel existe déjà.");
             }
+
+            if (ToList().Any(s =>
+                s.Id != student.Id &&
+                !string.IsNullOrWhiteSpace(s.Code) &&
+                s.Code.Equals(student.Code, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new Exception("Ce code étudiant existe déjà.");
+            }
+
+            stored.FirstName = student.FirstName;
+            stored.LastName = student.LastName;
+            stored.Email = student.Email;
+            stored.Phone = student.Phone;
+            stored.BirthDate = student.BirthDate;
+
+            return base.Update(stored);
         }
+
 
         public override bool Delete(int studentId)
         {

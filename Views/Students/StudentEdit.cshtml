@@ -41,9 +41,13 @@
             <input type="text" name="LastName" value="@Model.LastName" class="form-control" />
 
             <label>Date de naissance</label>
-            <input type="date" name="BirthDate"
+            <input type="date"
+                   name="BirthDate"
+                   class="form-control"
                    value="@Model.BirthDate.ToString("yyyy-MM-dd")"
-                   class="form-control" />
+                   max="@DateTime.Today.AddYears(-17).ToString("yyyy-MM-dd")"
+                   min="@DateTime.Today.AddYears(-100).ToString("yyyy-MM-dd")" />
+
 
             <label>Téléphone</label>
             <input type="text" name="Phone" value="@Model.Phone" class="form-control" />

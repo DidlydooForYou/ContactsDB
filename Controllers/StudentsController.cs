@@ -2,6 +2,7 @@
 using Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.ModelBinding;
 using System.Web.Mvc;
@@ -108,6 +109,9 @@ namespace ContactsDB.Controllers
             Student student = new Student();
             student.BirthDate = DateTime.Now;
 
+            if (!ModelState.IsValid)
+                return View(student);
+
             int year = Session["CurrentYear"] != null
                 ? (int)Session["CurrentYear"]
                 : NextSession.Year;
@@ -129,7 +133,7 @@ namespace ContactsDB.Controllers
             {
                 int year = Session["CurrentYear"] != null
                     ? (int)Session["CurrentYear"]
-                    : NextSession.Year; 
+                    : NextSession.Year;
 
                 string randomDigits = new Random().Next(0, 7).ToString();
 
@@ -142,10 +146,14 @@ namespace ContactsDB.Controllers
             return View(student);
         }
 
+
         [HttpPost]
         [UserAccess(Access.Write)]
         public ActionResult Edit(Student student, string SelectedCourseIds)
         {
+            if (!ModelState.IsValid)
+                return View(student);
+
             DB.Students.Update(student);
 
             int currentYear = Session["CurrentYear"] != null
@@ -167,9 +175,7 @@ namespace ContactsDB.Controllers
                 .ToList();
 
             foreach (var registration in registrations)
-            {
                 DB.Registrations.Delete(registration.Id);
-            }
 
             foreach (int courseId in selectedIds)
             {
@@ -183,5 +189,6 @@ namespace ContactsDB.Controllers
 
             return RedirectToAction("GetStudentDetails", new { id = student.Id });
         }
+
     }
 }
